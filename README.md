@@ -1,0 +1,2 @@
+# Query-Queens
+ The CompareIt price comparison web application designed to address the shortcomings of older platforms like PriceCheck, offering a modern, user-friendly interface and real-time price aggregation from online and physical retailers worldwide. The platform enables users to browse categories, filter by criteria such as brand or rating, view detailed product information, compare prices across stores, and contribute reviews, creating a more engaging and efficient shopping experience.
