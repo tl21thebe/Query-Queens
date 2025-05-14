@@ -15,9 +15,11 @@ include 'header.php';
 
             <label for="password">Password:</label><br>
             <input type="password" id="password" name="password" required><br><br>
-
+            <p>Dont have an account? Sign up <a href="signup.php">here!</a>
+            <br>
             <button type="submit">Login</button>
             <div id="loginMessage"></div>
         </form>
+        
     <?php endif; ?>
 </main>
