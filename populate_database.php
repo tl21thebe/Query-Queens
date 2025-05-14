@@ -100,4 +100,32 @@
             }
         }
     }
+    /*
+     * The following is a function that creates a table name reviews
+    */
+
+    function ensureReviewsTable($conn) {
+    
+        $result = $conn->query("SHOW TABLES LIKE 'reviews'");
+        if ($result->num_rows == 0) {
+            
+            $sql = "CREATE TABLE reviews (
+                id INT NOT NULL AUTO_INCREMENT,
+                product_id INT NOT NULL,
+                user_id INT NOT NULL,
+                rating INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
+                description TEXT,
+                review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                FOREIGN KEY (product_id) REFERENCES products(product_id),
+                FOREIGN KEY (user_id) REFERENCES users(userID)
+            )";
+            
+            if ($conn->query($sql) === TRUE) {
+                echo "Table 'reviews' created successfully.<br>";
+            } else {
+                throw new Exception("Error creating reviews table: " . $conn->error);
+            }
+        }
+    }
 ?>
