@@ -1,5 +1,6 @@
 <?php
 include 'header.php'; 
+include 'footer.php';
 ?>
 
 <!-- Add the specific CSS for this page -->
