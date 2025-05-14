@@ -75,5 +75,29 @@
     }
     /**This is what I could accomplish so far.
      * Please add and create more functions.
+     * below is a fuction that creates a table named product_store
      */
+
+    function ensureProductStoreTable($conn) {
+    
+        $result = $conn->query("SHOW TABLES LIKE 'product_store'");
+        if ($result->num_rows == 0) {
+            
+            $sql = "CREATE TABLE product_store (
+                id INT NOT NULL AUTO_INCREMENT,
+                product_id INT NOT NULL,
+                store_id INT NOT NULL,
+                price DECIMAL(10,2) NOT NULL,
+                PRIMARY KEY (id),
+                FOREIGN KEY (product_id) REFERENCES products(product_id),
+                FOREIGN KEY (store_id) REFERENCES stores(store_id)
+            )";
+            
+            if ($conn->query($sql) === TRUE) {
+                echo "Table 'product_store' created successfully.<br>";
+            } else {
+                throw new Exception("Error creating product_store table: " . $conn->error);
+            }
+        }
+    }
 ?>
