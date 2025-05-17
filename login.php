@@ -21,6 +21,9 @@ include 'footer.php';
             <button type="submit">Login</button>
             <div id="loginMessage"></div>
         </form>
-        
+        <p>Don't have an account? <a href="signup.php">Register here</a></p>
+    <?php endif; ?>   
     <?php endif; ?>
 </main>
+
+<script src="login.js"></script>  
