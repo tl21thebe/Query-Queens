@@ -21,4 +21,32 @@ and then we can compare the different categories such as :
 Sabira mentioned that we can use her details for her wheatley and her php Admin so i think she will be responsible for this file 
 
 okay bye :) 
+*/
+
+if(session_status() == PHP_SESSION_NONE)
+{
+    session_start();
+}
+
+$host = 'localhost';
+$dbname = 'compareIt';
+$username = '';
+$password = '';
+
+try 
+{
+    // Try using the mysql_native_password authentication method
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password, 
+    [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'"
+    ]);
+} 
+catch (PDOException $e) 
+{
+    die("Connection failed: " . $e->getMessage());
+}
+
+
+
 
