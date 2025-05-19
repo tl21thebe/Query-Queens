@@ -36,3 +36,42 @@
     border-radius: 5px;
     margin-right: 20px;
 }
+
+.wishlist-details 
+{
+    flex: 1;
+}
+
+.wishlist-details h2 
+{
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+}
+
+.wishlist-details p 
+{
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.remove-btn 
+{
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.remove-btn:hover 
+{
+    background-color: darkred;
+}
+
+/* Apply overlay in dark theme */
+.dark-theme .loader-container 
+{
+    background-color: rgba(0, 0, 0, 0.7);
+}
