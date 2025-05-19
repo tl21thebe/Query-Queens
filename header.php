@@ -7,7 +7,8 @@ include_once 'config.php';
 
 if (!function_exists('isLoggedIn')) 
 {
-    function isLoggedIn() {
+    function isLoggedIn() 
+    {
         return isset($_SESSION['user']) && !empty($_SESSION['user']);
     }
 }
@@ -79,6 +80,7 @@ $theme_class = $current_theme === 'dark' ? 'dark-theme' : '';
             <a href="<?php echo $base_url; ?>shopping.php">SHOPPING</a>
             <a href="<?php echo $base_url; ?>deals.php">DEALS</a>
             <a href="<?php echo $base_url; ?>login.php">LOGIN</a>
+            <a href="<?php echo $base_url; ?>wishlist.php">WISHLIST</a>
             <a href="<?php echo $base_url; ?>signup.php">SIGN IN</a>
             <?php if (isLoggedIn()): ?>
                 <div class="user-info">
