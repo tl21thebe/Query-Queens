@@ -26,3 +26,12 @@ CREATE TABLE User_preferences (
     only_available BOOLEAN,
     FOREIGN KEY (userpref_UserID) REFERENCES Users(userID)
 );
+
+-- Create Userpref_brands junction table
+CREATE TABLE Userpref_brands (
+    userPrefID INT,
+    Upref_brands VARCHAR(100),
+    PRIMARY KEY (userPrefID, Upref_brands),
+    FOREIGN KEY (userPrefID) REFERENCES User_preferences(userpref_ID)
+);
+
