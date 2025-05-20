@@ -1,6 +1,5 @@
 <?php
 
-//this is the config that we are going to use to connect to the database :
 /*
 okay here is what we decided on , i think T menitoned that we are no longer going to use mock data anymore and the api that they provided
 but now we are going to create our own products based on the theme , we decided on shoes
@@ -46,6 +45,7 @@ catch (PDOException $e)
 {
     die("Connection failed: " . $e->getMessage());
 }
+?>
 
 
 

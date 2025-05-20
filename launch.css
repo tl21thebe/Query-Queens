@@ -1,0 +1,75 @@
+body 
+{ 
+    text-align: center; 
+    padding: 100px; 
+    font: 50x Helvetica, sans-serif; 
+    color: #333; 
+    background-color: aliceblue;
+
+}
+
+h1 
+{ 
+    font-size: 75px; 
+    color: black; 
+    font-family: 'Monospace';
+}
+
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 2s ease-in forwards;
+}
+
+/* Keyframes for the fade-in effect */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+article 
+{ 
+    display: block; 
+    text-align: center; 
+    width: 650px; 
+    margin: 0 auto; 
+}
+
+img 
+{
+    width: 500px;
+    display: block;
+    margin: 0 auto;
+}
+
+.button-container 
+{
+    display: flex; 
+    justify-content: center; 
+    gap: 10px; 
+    margin-top: 20px;
+}
+
+.button 
+{
+    display: inline-block;
+    width: 80px;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: black;
+    background-color: white;
+    border: 2px solid black;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.button:hover 
+{
+    background-color: #f0f0f0; 
+}
