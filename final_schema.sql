@@ -52,3 +52,20 @@ CREATE TABLE Userpref_stores (
     FOREIGN KEY (userPrefID) REFERENCES User_preferences(userprefID)
 );
 
+-- create Shoes
+CREATE TABLE Shoes (
+    shoeID INT PRIMARY KEY AUTO_INCREMENT,
+    categoryID INT,
+    name VARCHAR(100) NOT NULL,
+    brandID INT NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    releaseDate DATE NOT NULL,
+    description TEXT NOT NULL,
+    material TEXT NOT NULL,
+    gender ENUM('Male','Female','Prefer not to say'),
+    image_url VARCHAR(255) NOT NULL,
+    size_range VARCHAR(50), -- idk if this works or if it would be more normalized if we made a seperate table then derive this from there?
+    colour VARCHAR(100) NOT NULL,
+    Upref_stores INT,
+    FOREIGN KEY (brandID) REFERENCES Brands(brandID)
+);
