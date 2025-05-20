@@ -18,3 +18,11 @@ CREATE TABLE User_phoneNo (
     FOREIGN KEY (userID) REFERENCES Users(userID)
 );
 
+CREATE TABLE User_preferences (
+    userpref_ID INT PRIMARY KEY AUTO_INCREMENT,
+    userpref_UserID INT NOT NULL,
+    max_price DECIMAL(10, 2),
+    min_price DECIMAL(10, 2),
+    only_available BOOLEAN,
+    FOREIGN KEY (userpref_UserID) REFERENCES Users(userID)
+);
