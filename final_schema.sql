@@ -10,3 +10,11 @@ CREATE TABLE Users (
     city VARCHAR(100) NOT NULL,
     street VARCHAR(100) NOT NULL
 );
+
+CREATE TABLE User_phoneNo (
+    userID INT NOT NULL,
+    U_phoneNo VARCHAR(20) NOT NULL,
+    PRIMARY KEY (userID, U_phoneNo),
+    FOREIGN KEY (userID) REFERENCES Users(userID)
+);
+
