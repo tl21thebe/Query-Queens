@@ -44,3 +44,11 @@ CREATE TABLE Userpref_cat (
 );
 
 
+-- Create Userpref_stores junction table
+CREATE TABLE Userpref_stores (
+    userPrefID INT,
+    Upref_stores INT,
+    PRIMARY KEY (userPrefID, Upref_stores),
+    FOREIGN KEY (userPrefID) REFERENCES User_preferences(userprefID)
+);
+
