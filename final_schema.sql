@@ -35,3 +35,12 @@ CREATE TABLE Userpref_brands (
     FOREIGN KEY (userPrefID) REFERENCES User_preferences(userpref_ID)
 );
 
+-- Create Userpref_cat junction table
+CREATE TABLE Userpref_cat (
+    userPrefID INT,
+    Upref_categ INT,
+    PRIMARY KEY (userPrefID, Upref_categ),
+    FOREIGN KEY (userPrefID) REFERENCES User_preferences(userpref_ID)
+);
+
+
