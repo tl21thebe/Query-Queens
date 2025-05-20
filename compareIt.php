@@ -1,7 +1,5 @@
 <?php
-include_once 'header.php';
-include_once 'footer.php';
-?>
+include_once 'header.php';?>
 
 <link rel="stylesheet" href="compareIt.css">
 
@@ -35,5 +33,8 @@ include_once 'footer.php';
     <div class="products-holder"></div>
 
     <script src="compareIt.js"></script>
+
+<?php include_once 'footer.php';?>
+
 
 
