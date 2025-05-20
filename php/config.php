@@ -22,7 +22,23 @@ Sabira mentioned that we can use her details for her wheatley and her php Admin 
 okay bye :) 
 */
 
-if(session_status() == PHP_SESSION_NONE)
+$host = 'localhost'; // This works ON wheatley. Don't change to 'wheatley.cs.up.ac.za'
+$dbname = 'u23591481_queryqueens_compareIt'; // Your DB name (must start with your student number)
+$user = 'u23591481'; // Your student number
+$pass = 'YFOQ5R4KUUEFVGAZR2FQDGWRJT6LE5Z3'; // Find this in the password file on Wheatley
+
+try {
+
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die(json_encode([
+        "status" => "error",
+        "timestamp" => time() * 1000,
+        "data" => "Database connection failed: " . $e->getMessage()
+    ]));
+}
+/*if(session_status() == PHP_SESSION_NONE)
 {
     session_start();
 }
@@ -44,7 +60,7 @@ try
 catch (PDOException $e) 
 {
     die("Connection failed: " . $e->getMessage());
-}
+}*/
 ?>
 
 
