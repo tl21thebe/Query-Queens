@@ -24,7 +24,7 @@ switch ($type) {
     case 'getAllProducts':
        handleGetAllProducts($pdo);
         break;
-        
+
     case 'GetRatedProducts':
        handleGetRatedProducts($pdo);
         break;
@@ -116,6 +116,39 @@ function handleGetAllProducts($pdo) {
 
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     echo json_encode(["status" => "success", "data" => $products]);
+}
+
+function handleGetRatedProducts($pdo) {
+    try {
+        $query = "
+            SELECT 
+                s.shoeID,
+                s.name,
+                s.price,
+                s.description,
+                s.material,
+                s.gender,
+                s.image_url,
+                s.size_range,
+                s.colour,
+                b.name AS brand_name,
+                COUNT(r.reviewID) AS review_count,
+                ROUND(AVG(r.rating), 1) AS avg_rating
+            FROM shoes s
+            INNER JOIN reviews_rating r ON s.shoeID = r.R_shoesID
+            INNER JOIN brands b ON s.brandID = b.brandID
+            GROUP BY s.shoeID
+            ORDER BY review_count DESC
+        ";
+
+        $stmt = $pdo->prepare($query);
+        $stmt->execute();
+        $ratedProducts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        echo json_encode(["status" => "success", "data" => $ratedProducts]);
+    } catch (PDOException $e) {
+        echo json_encode(["status" => "error", "data" => "Database error: " . $e->getMessage()]);
+    }
 }
 
 ?>
