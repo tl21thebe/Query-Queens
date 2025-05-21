@@ -17,7 +17,7 @@
       getAllProducts
     } from './js/getProducts.js';
 
-    const apiKey = '9cbcb909999ccabff7d78c7495581dee';
+    //const apiKey = '9cbcb909999ccabff7d78c7495581dee'; We will use a valid apiKey once we have one in the users table
 
     async function loadProducts() {
       const container = document.getElementById('product-list');

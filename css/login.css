@@ -1,78 +1,96 @@
 body {
-    font-family: Arial, sans-serif;
-    background: #f7f7f7;
+    font-family: 'Kanit', sans-serif;
     margin: 0;
     padding: 0;
-}
-
-.container {
-    width: 100%;
-    max-width: 400px;
-    margin: 80px auto;
-    padding: 20px;
-    background: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.form-container {
-    width: 100%;
-}
-
-.form-btn h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #333;
+    background-color: #d7f7f3;
 }
 
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
-input[type="email"],
-input[type="password"] {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    box-sizing: border-box;
-    font-size: 14px;
+.form-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #555;
 }
 
-.btn {
-    width: 100%;
-    padding: 12px;
-    background-color: #007bff;
-    color: white;
+.form-group input {
+    width: 90%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+button[type="submit"] {
+    background-color: #0084ff;
+    align-self: center;
+    font-weight: 900;
+    font-family: 'Kanit', sans-serif;
+    color: #ffffff;
     border: none;
-    border-radius: 6px;
+    width: 50%;
+    padding: 10px 15px;
+    border-radius: 30px;
     cursor: pointer;
-    font-size: 16px;
-    margin-top: 10px;
 }
 
-.btn:hover {
-    background-color: #0056b3;
+button[type="submit"]:hover {
+    background-color: #0084ff;
+    transform: scale(1.1);
 }
 
-.error-message {
-    color: red;
-    font-size: 14px;
-    margin-top: 10px;
+.button-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.message-container {
+    margin-bottom: 20px;
+}
+
+.message-container .error {
+    padding: 10px;
+    background-color: #ffeeee;
+    border-left: 4px solid #ff0000;
+    color: #a94442;
+}
+
+.message-container .success {
+    padding: 10px;
+    background-color: #eeffee;
+    border-left: 4px solid #00cc00;
+    color: #3c763d;
+}
+
+.login-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-container h2 {
     text-align: center;
+    margin-bottom: 30px;
+    color: #333;
 }
 
-a {
-    color: #007bff;
+.login-container p {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.login-container a {
+    color: #000;
     text-decoration: none;
 }
 
-a:hover {
+.login-container a:hover {
     text-decoration: underline;
-}
-
-p {
-    text-align: center;
-    margin-top: 15px;
-    font-size: 14px;
 }
