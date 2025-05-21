@@ -69,3 +69,12 @@ CREATE TABLE Shoes (
     Upref_stores INT,
     FOREIGN KEY (brandID) REFERENCES Brands(brandID)
 );
+
+-- User_Shoes
+CREATE TABLE User_Shoes (
+	h_userID INT,
+    h_shoeID INT,
+    PRIMARY KEY(h_userID, h_shoeID),
+    FOREIGN KEY(h_userID) REFERENCES Users(userID),
+    FOREIGN KEY(h_shoeID) REFERENCES Shoes(shoeID)
+);
