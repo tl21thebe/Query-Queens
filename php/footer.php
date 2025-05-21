@@ -1,5 +1,5 @@
 <!-- footer.php -->
-<link rel="stylesheet" href="../css/styles.css">
+<link rel="stylesheet" href="../css/style.css">
 <footer>
     <div class="footer-container">
         <div class="footer-section">
