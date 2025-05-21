@@ -43,7 +43,7 @@ $theme_class = $current_theme === 'dark' ? 'dark-theme' : '';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compare It</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../css/styles.css">
     <script>
         // Early theme initialization
         (function() 
