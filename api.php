@@ -58,7 +58,7 @@ class Database {
 
   //This function will validate the apiKey
   private function isValidApiKey($apikey) {
-        $query = "SELECT id FROM users WHERE api_key = ?";
+        $query = "SELECT userID FROM users WHERE apiKey = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param("s", $apikey);
         $stmt->execute();
