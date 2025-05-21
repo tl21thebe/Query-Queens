@@ -2,7 +2,7 @@ body{
     background-color: lightgray;
 }
 
-form#add-shoe-form {
+form#shoe-form {
     max-width: 600px;
     margin: 2rem auto;
     background-color: #ffffff;
@@ -11,7 +11,7 @@ form#add-shoe-form {
     box-shadow: 0 0 15px rgba(169, 169, 169, 0.2); /* darkgray-ish shadow */
 }
 
-/* Form Title */
+
 h1 {
     text-align: center;
     color: palevioletred;
@@ -21,21 +21,21 @@ h1 {
     padding-bottom: 0.5rem;
 }
 
-/* Label styling */
-form#add-shoe-form label {
+
+form#shoe-form label {
     display: block;
     margin-bottom: 0.25rem;
     font-weight: bold;
     color: black;
 }
 
-/* Input, Select, Textarea styling */
-form#add-shoe-form input[type="text"],
-form#add-shoe-form input[type="number"],
-form#add-shoe-form input[type="date"],
-form#add-shoe-form input[type="url"],
-form#add-shoe-form textarea,
-form#add-shoe-form select {
+
+form#shoe-form input[type="text"],
+form#shoe-form input[type="number"],
+form#shoe-form input[type="date"],
+form#shoe-form input[type="url"],
+form#shoe-form textarea,
+form#shoe-form select {
     width: 100%;
     padding: 0.6rem;
     margin-bottom: 1rem;
@@ -47,16 +47,16 @@ form#add-shoe-form select {
     transition: border-color 0.3s, background-color 0.3s;
 }
 
-form#add-shoe-form input:focus,
-form#add-shoe-form textarea:focus,
-form#add-shoe-form select:focus {
+form#shoe-form input:focus,
+form#shoe-form textarea:focus,
+form#shoe-form select:focus {
     outline: none;
     border-color: palevioletred;
     background-color: #fff;
 }
 
-/* Submit Button */
-form#add-shoe-form button[type="submit"] {
+
+form#shoe-form button[type="submit"] {
     width: 100%;
     background-color: palevioletred;
     color: white;
@@ -70,12 +70,12 @@ form#add-shoe-form button[type="submit"] {
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-form#add-shoe-form button[type="submit"]:hover {
+form#shoe-form button[type="submit"]:hover {
     background-color: mediumvioletred;
     transform: scale(1.02);
 }
 
-/* Optional: Info Box or Hints */
+
 .info-box {
     background-color: lightgray;
     color: #333;
@@ -85,9 +85,18 @@ form#add-shoe-form button[type="submit"]:hover {
     font-size: 0.95rem;
 }
 
+.controls {
+    display: flex;
+    justify-content: space-between;
+}
+
+#form-container {
+    text-align: center;
+    align-items: center;
+}
 
 @media (max-width: 600px) {
-    form#add-shoe-form {
+    form#shoe-form {
         padding: 1rem;
         margin: 1rem;
     }
