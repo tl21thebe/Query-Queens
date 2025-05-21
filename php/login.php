@@ -1,29 +1,21 @@
-<?php
-include 'header.php';
-include 'footer.php';
-?>
-
-<link rel = "stylesheet" href = "../css/login.css">
-
-<main>
-    <h2>Login</h2>
-    <?php if(isset($_SESSION['user'])): ?>
-         <p>You are already logged in. You can now:</p>
-    <?php else: ?>
-        <form method="post" id="loginForm">
-            <label for="email">Email:</label><br>
-            <input type="email" id="email" name="email" required><br>
-
-            <label for="password">Password:</label><br>
-            <input type="password" id="password" name="password" required><br><br>
-            <p>Dont have an account? Sign up <a href="signup.php">here!</a>
-            <br>
-            <button type="submit">Login</button>
-            <div id="loginMessage"></div>
-        </form>
-        <p>Don't have an account? <a href="signup.php">Register here</a></p>
-    <?php endif; ?>   
-
-    </main>
-
-<script src="login.js"></script> 
+<div class="container">
+    <div class="row">
+        <div class="form-container">
+            <div class="form-btn">
+                <h2>Login</h2>
+            </div>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <input type="email" id="email" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn">Login</button>
+                <p id="error-msg" class="error-message"></p>
+                <p>New to CompareIt? <a href="signup.php">Signup here!</a></p>
+            </form>
+        </div>
+    </div>
+</div>
