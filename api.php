@@ -187,7 +187,7 @@ class Products
 }
 */
 }
-switch ($requestBody->type) //I edited this too, you can still change it though
+/*switch ($requestBody->type) //there was more than 1 switch function
 {
    
 default:
