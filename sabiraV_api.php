@@ -24,6 +24,10 @@ switch ($type) {
     case 'getAllProducts':
        handleGetAllProducts($pdo);
         break;
+        
+    case 'GetRatedProducts':
+       handleGetRatedProducts($pdo);
+        break;
 
     default:
         echo json_encode(["status" => "error", "data" => "Unknown request type"]);
