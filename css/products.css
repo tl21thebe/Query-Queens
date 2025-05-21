@@ -1,0 +1,89 @@
+body 
+{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    padding: 20px;
+    background-color: palevioletred;
+    color: white;
+    margin: 0;
+}
+
+/* Container for the product list */
+#product-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    padding: 30px;
+}
+
+/* Each product block */
+.product {
+    width: 300px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+}
+
+.product:hover {
+    transform: scale(1.02);
+}
+
+/* Title of the product */
+.product-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: palevioletred;
+}
+
+/* Style for product text info */
+.product div {
+    margin: 5px 0;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+/* Highlight availability */
+.product div strong {
+    color: #444;
+}
+
+/* Responsive handling */
+@media (max-width: 600px) {
+    .product {
+        width: 90%;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Optional: default image styling if image tag is added */
+.product img {
+    width: 100%;
+    height: auto;
+    max-height: 180px;
+    object-fit: contain;
+    margin-bottom: 10px;
+    border-radius: 8px;
+}
+
+/* Placeholder style when loading or showing error */
+#product-list p {
+    font-size: 1rem;
+    color: #888;
+    text-align: center;
+}
