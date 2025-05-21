@@ -62,3 +62,68 @@ switch ($type)
         echo json_encode(['status' => 'error', 'message' => 'Invalid type']);
         break;
 }
+
+function handleLogin($data) 
+{
+    global $pdo;
+
+    $email = isset($data['email']) ? $data['email'] : '';
+    $password = isset($data['password']) ? $data['password'] : '';
+
+    if (empty($email) || empty($password)) 
+    {
+        http_response_code(400);
+        echo json_encode(['status' => 'error', 'message' => 'Email and password are required']);
+        return;
+    }
+
+    try 
+    {
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$user) 
+        {
+            http_response_code(401);
+            echo json_encode(['status' => 'error', 'message' => 'Invalid email or password']);
+            return;
+        }
+
+        list($salt, $hash) = explode(':', $user['password']);
+        $passwordHash = hash('sha256', $salt . $password);
+
+        if ($passwordHash !== $hash) 
+        {
+            http_response_code(401);
+            echo json_encode(['status' => 'error', 'message' => 'Invalid email or password']);
+            return;
+        }
+
+        $_SESSION['user'] = 
+        [
+            'id' => $user['id'],
+            'email' => $user['email'],
+            'name' => $user['name'],
+            'api_key' => $user['api_key']
+        ];
+
+        echo json_encode([
+            'status' => 'success',
+            'timestamp' => time() * 1000,
+            'data' => [
+                'api_key' => $user['api_key'],
+                'email' => $user['email'],
+                'name' => $user['name']
+            ]
+        ]);
+
+    } 
+    catch (PDOException $e) 
+    {
+        http_response_code(500);
+        echo json_encode(['status' => 'error', 'message' => 'Database error']);
+    }
+}
+
