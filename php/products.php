@@ -6,6 +6,7 @@
   <meta charset="UTF-8">
   <title>Product Listing</title>
   <script type="module" src="js/getProducts.js"></script>
+  <link rel="stylesheet" href="../css/products.css"> <
 
 </head>
 <body>
