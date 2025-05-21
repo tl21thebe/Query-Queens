@@ -86,3 +86,19 @@ CREATE TABLE Stores (
     shoeID VARCHAR(50) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL
 );
+
+-- Store types (specialisation)
+CREATE TABLE Online_store (
+    storeID INT,
+    URL VARCHAR(255) NOT NULL,
+    FOREIGN KEY(storeID) REFERENCES Stores(storeID)
+);
+
+CREATE TABLE Physical_store (
+    storeID INT,
+	country VARCHAR(100) NOT NULL, -- I split location into these. you can correct it if its wrong
+    city VARCHAR(100) NOT NULL,
+    street VARCHAR(100) NOT NULL,
+    openHours VARCHAR(100),
+    FOREIGN KEY(storeID) REFERENCES Stores(storeID)
+);
