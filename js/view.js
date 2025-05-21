@@ -1,68 +1,50 @@
-document.addEventListener("DOMContentLoaded", function() 
-{
+// Update view.js with this enhanced version
+document.addEventListener("DOMContentLoaded", function() {
     const productId = getProductIdFromURL();
-    if (productId) 
-    {
+    if (productId) {
         fetchProductDetails(productId);
     }
 });
 
-function getProductIdFromURL() 
-{
+function getProductIdFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
-    const productId = urlParams.get('id'); 
-    return productId;
+    return urlParams.get('id');
 }
 
-function fetchProductDetails(productId) 
-{
-    const url = 'api.php';
-    const data = JSON.stringify({
-        apikey: API_KEY,
-        type: 'GetAllProducts',
-        search:
-        {
-            id: productId
-        },
-        return: "*",
-        limit: 1
-    });
+async function fetchProductDetails(productId) {
+    try {
+        const response = await fetch('api.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                endpoint: 'getProductById',
+                product_id: productId
+            })
+        });
 
-    const xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function()
-    {
-        if(xhttp.readyState == 4)
-        {
-            if(xhttp.status == 200)
-            {
-                const response = JSON.parse(xhttp.responseText);
-                if(response.status == "success" && response.data.length > 0)
-                {
-                    displayProductDetails(response.data[0]);
-                }
-                else
-                {
-                    console.error("Error, product not found", response);
-                }
-            }
-            else
-            {
-                console.error("API request failed with status:", xhttp.status);
-            }
+        if (!response.ok) {
+            throw new Error('Failed to fetch product details');
         }
-    };
 
-    xhttp.open('POST', url, true);
-    xhttp.setRequestHeader("Content-Type", "application/json");
-    xhttp.send(data);
+        const data = await response.json();
+        if (data.status === "success" && data.product) {
+            displayProductDetails(data.product);
+        } else {
+            console.error("Product not found", data);
+            document.getElementById('product-title').textContent = "Product not found";
+        }
+    } catch (error) {
+        console.error("Error fetching product:", error);
+        document.getElementById('product-title').textContent = "Error loading product";
+    }
 }
 
-// Function to display product details
-function displayProductDetails(product) 
-{
+function displayProductDetails(product) {
     // Main image and details
     const mainImage = document.getElementById("main-image");
-    mainImage.src = product.image_url;
+    mainImage.src = product.image_url || 'images/default.jpg';
     mainImage.alt = product.title;
 
     document.getElementById("product-title").textContent = product.title;
@@ -71,78 +53,79 @@ function displayProductDetails(product)
 
     // Extra features
     const extraFeaturesList = document.getElementById("extra-features");
-    extraFeaturesList.innerHTML = ""; // Clear previous content
+    extraFeaturesList.innerHTML = "";
 
-    const additionalDetails = 
-    [
-        `Category: ${product.department}`,
+    // Add basic product info
+    const basicDetails = [
         `Brand: ${product.brand}`,
+        `Category: ${product.categories}`,
+        `Availability: ${product.is_available ? 'In Stock' : 'Out of Stock'}`
     ];
 
-    // If extra_features exists and is an array
-    if (product.extra_features && Array.isArray(product.extra_features)) 
-    {
-        product.extra_features.forEach(feature => {
-            const li = document.createElement("li");
-            li.textContent = feature;
-            extraFeaturesList.appendChild(li);
-        });
-    }
-
-    //first ensure if it is an array:
-    if (product.extra_features && Array.isArray(product.extra_features)) 
-    {
-        product.extra_features.forEach(feature => 
-        {
-            const li = document.createElement("li");
-            li.textContent = feature;
-            extraFeaturesList.appendChild(li);
-        });
-    }
-
-    // Add additional details
-    additionalDetails.forEach(detail => 
-    {
+    basicDetails.forEach(detail => {
         const li = document.createElement("li");
         li.textContent = detail;
         extraFeaturesList.appendChild(li);
     });
 
-    // Ensure images is an array
-    let images;
-    if (Array.isArray(product.images)) 
-    {
-        images = product.images; // If it's already an array, use it
-    } 
-    else 
-    {
-        images = [product.images]; // If it's not an array, wrap it in an array
+    // Add retailer prices if available
+    if (product.retailer_prices && product.retailer_prices.length > 0) {
+        const priceHeader = document.createElement("li");
+        priceHeader.innerHTML = "<strong>Prices at Retailers:</strong>";
+        extraFeaturesList.appendChild(priceHeader);
+        
+        product.retailer_prices.forEach(retailer => {
+            const li = document.createElement("li");
+            li.textContent = `${retailer.name}: ZAR ${retailer.price}`;
+            extraFeaturesList.appendChild(li);
+        });
+    }
+
+    // Add ratings if available
+    if (product.ratings) {
+        const ratingLi = document.createElement("li");
+        ratingLi.innerHTML = `<strong>Rating:</strong> ${product.ratings.average} (${product.ratings.count} reviews)`;
+        extraFeaturesList.appendChild(ratingLi);
+    }
+
+    // Add reviews if available
+    if (product.reviews && product.reviews.length > 0) {
+        const reviewHeader = document.createElement("li");
+        reviewHeader.innerHTML = "<strong>Customer Reviews:</strong>";
+        extraFeaturesList.appendChild(reviewHeader);
+        
+        product.reviews.forEach(review => {
+            const reviewLi = document.createElement("li");
+            reviewLi.innerHTML = `
+                <div class="review">
+                    <strong>${review.user}</strong> - ${review.rating} stars
+                    <p>${review.comment}</p>
+                    <small>${review.date}</small>
+                </div>
+            `;
+            extraFeaturesList.appendChild(reviewLi);
+        });
+    }
+
+    // Setup image carousel if multiple images exist
+    if (product.images && product.images.length > 1) {
+        setupImageCarousel(product.images);
     }
 }
 
-// Function to set up image carousel
 function setupImageCarousel(images) 
 {
     const thumbnailsContainer = document.querySelector(".image-thumbnails");
-    thumbnailsContainer.innerHTML = ""; // Clear previous thumbnails
+    thumbnailsContainer.innerHTML = "";
 
-    if (images.length == 0) 
+    images.forEach((image, index) => 
     {
-        return;
-    }
-
-    // Create a main image element
-    const mainImage = document.getElementById("main-image");
-    mainImage.src = images[0]; // Set the first image as the main image
-
-    images.forEach((image, index) => {
         const img = document.createElement("img");
         img.src = image;
         img.alt = `Product Image ${index + 1}`;
         img.classList.add("thumbnail");
-        img.addEventListener("click", () => 
-        {
-            mainImage.src = image; // Change main image on thumbnail click
+        img.addEventListener("click", () => {
+            document.getElementById("main-image").src = image;
         });
         thumbnailsContainer.appendChild(img);
     });

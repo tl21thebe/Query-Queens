@@ -42,7 +42,7 @@ async function getAllProducts(apiKey) {
 async function getProductById(apiKey, productId) {
   try {
     const response = await fetch(`${API_BASE_URL}?endpoint=getProductById`, {
-      method: "GET",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${apiKey}`
@@ -185,7 +185,8 @@ async function getProductCategories(apiKey) {
  * @param {string} brand - Brand name to filter by
  * @returns {Promise} - Promise that resolves to filtered product data
  */
-async function getProductsByBrand(apiKey, brand) {
+async function getProductsByBrand(apiKey, brand) 
+{
   try {
     const allProducts = await getAllProducts(apiKey);
     return allProducts.filter(product => 
@@ -197,8 +198,47 @@ async function getProductsByBrand(apiKey, brand) {
   }
 }
 
+function renderProductList(products, container) 
+{
+  container.innerHTML = '';
+  
+  if (products.length === 0) 
+  {
+    container.innerHTML = '<p>No products found.</p>';
+    return;
+  }
+
+  products.forEach(product => {
+    const productElement = document.createElement('div');
+    productElement.className = 'product-item';
+    productElement.innerHTML = `
+      <div class="product-image">
+        <img src="${product.image_url}" alt="${product.title}" onerror="this.src='images/default.jpg'">
+      </div>
+      <div class="product-info">
+        <h3>${product.title}</h3>
+        <p class="brand">${product.brand}</p>
+        <p class="price">ZAR ${product.final_price}</p>
+        <p class="description">${product.description.substring(0, 100)}...</p>
+        <button class="view-details" data-id="${product.id}">View Details</button>
+      </div>
+    `;
+    
+    container.appendChild(productElement);
+  });
+
+  // Add event listeners to all view buttons
+  document.querySelectorAll('.view-details').forEach(button => {
+    button.addEventListener('click', (e) => {
+      const productId = e.target.getAttribute('data-id');
+      window.location.href = `view.php?id=${productId}`;
+    });
+  });
+}
+
 // Export all functions
-export {
+export 
+{
   getAllProducts,
   getProductById,
   getProductsByCategory,
@@ -206,5 +246,6 @@ export {
   searchProducts,
   updateProductAvailability,
   getProductCategories,
-  getProductsByBrand
+  getProductsByBrand,
+  renderProductList
 };
