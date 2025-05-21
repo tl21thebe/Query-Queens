@@ -127,3 +127,35 @@ function handleLogin($data)
     }
 }
 
+function handleLogout() 
+{
+    $_SESSION = array();
+    session_destroy();
+    echo json_encode([
+        'status' => 'success',
+        'timestamp' => time() * 1000,
+        'message' => 'Logged out successfully'
+    ]);
+}
+
+function checkSession() 
+{
+    if (isset($_SESSION['user'])) 
+    {
+        echo json_encode([
+            'status' => 'success',
+            'timestamp' => time() * 1000,
+            'data' => $_SESSION['user']
+        ]);
+    } 
+    else 
+    {
+        http_response_code(401);
+        echo json_encode([
+            'status' => 'error',
+            'timestamp' => time() * 1000,
+            'message' => 'Not logged in'
+        ]);
+    }
+}
+?>
