@@ -81,9 +81,9 @@ function handleLogin($pdo) {
 
 function handleGetAllProducts($pdo) {
     $stmt = $pdo->query("SELECT s.shoeID, s.name, s.price, s.image_url, b.name AS brand, c.type AS category
-                         FROM Shoes s
-                         LEFT JOIN Brands b ON s.brandID = b.brandID
-                         LEFT JOIN Categories c ON s.categoryID = c.categoryID");
+                         FROM shoes s
+                         LEFT JOIN brands b ON s.brandID = b.brandID
+                         LEFT JOIN categories c ON s.categoryID = c.categoryID");
 
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     echo json_encode(["status" => "success", "data" => $products]);
