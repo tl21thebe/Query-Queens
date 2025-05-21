@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <head>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./css/signup.css">
+    <link rel="stylesheet" href="../css/signup.css">
 </head>
 <body>
 <div class="signup-container">
