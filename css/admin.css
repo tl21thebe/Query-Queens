@@ -1,0 +1,98 @@
+body{
+    background-color: lightgray;
+}
+
+form#add-shoe-form {
+    max-width: 600px;
+    margin: 2rem auto;
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(169, 169, 169, 0.2); /* darkgray-ish shadow */
+}
+
+/* Form Title */
+h1 {
+    text-align: center;
+    color: palevioletred;
+    margin-top: 80px;
+    font-size: 2rem;
+    border-bottom: 2px solid lightgray;
+    padding-bottom: 0.5rem;
+}
+
+/* Label styling */
+form#add-shoe-form label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: bold;
+    color: black;
+}
+
+/* Input, Select, Textarea styling */
+form#add-shoe-form input[type="text"],
+form#add-shoe-form input[type="number"],
+form#add-shoe-form input[type="date"],
+form#add-shoe-form input[type="url"],
+form#add-shoe-form textarea,
+form#add-shoe-form select {
+    width: 100%;
+    padding: 0.6rem;
+    margin-bottom: 1rem;
+    border: 1px solid lightgray;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.3s, background-color 0.3s;
+}
+
+form#add-shoe-form input:focus,
+form#add-shoe-form textarea:focus,
+form#add-shoe-form select:focus {
+    outline: none;
+    border-color: palevioletred;
+    background-color: #fff;
+}
+
+/* Submit Button */
+form#add-shoe-form button[type="submit"] {
+    width: 100%;
+    background-color: palevioletred;
+    color: white;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+form#add-shoe-form button[type="submit"]:hover {
+    background-color: mediumvioletred;
+    transform: scale(1.02);
+}
+
+/* Optional: Info Box or Hints */
+.info-box {
+    background-color: lightgray;
+    color: #333;
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+
+@media (max-width: 600px) {
+    form#add-shoe-form {
+        padding: 1rem;
+        margin: 1rem;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+}
