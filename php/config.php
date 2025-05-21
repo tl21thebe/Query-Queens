@@ -19,11 +19,11 @@ and then we can compare the different categories such as :
 Sabira mentioned that we can use her details for her wheatley and her php Admin so i think she will be responsible for this file 
 
 okay bye :) 
-*/
+
 if(session_status() == PHP_SESSION_NONE)//create a session that can be included in the header.php which is included in every other file so that we dont need to start the session at the beginning of evry file 
 {
     session_start();
-}
+}*/
 
 $host = 'localhost'; // This works ON wheatley. Don't change to 'wheatley.cs.up.ac.za'
 $dbname = 'u23591481_queryqueens_compareIt'; // Your DB name (must start with your student number)

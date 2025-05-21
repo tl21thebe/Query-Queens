@@ -16,13 +16,8 @@ const API_BASE_URL = "api.php";
  */
 async function getAllProducts(apiKey) {
   try {
-    const response = await fetch(`${API_BASE_URL}?endpoint=getAllProducts`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`
-      }
-    });
+    //took out the header auth
+    const response = await fetch(`${API_BASE_URL}?endpoint=getAllProducts`);
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -30,7 +25,7 @@ async function getAllProducts(apiKey) {
     }
 
     const data = await response.json();
-    return data.products;
+    return data.data;
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;
