@@ -102,3 +102,15 @@ CREATE TABLE Physical_store (
     openHours VARCHAR(100),
     FOREIGN KEY(storeID) REFERENCES Stores(storeID)
 );
+
+-- Create Brands table
+CREATE TABLE Brands (
+    brandID INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL
+);
+
+-- Categories
+CREATE TABLE Categories (
+    categoryID INT PRIMARY KEY AUTO_INCREMENT,
+    type VARCHAR(255)
+);
