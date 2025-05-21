@@ -121,5 +121,52 @@ class API
         }
     }
 
+     private function handleLogin($requestData) 
+    {
+        $email = isset($requestData['email']) ? $requestData['email'] : '';
+        $password = isset($requestData['password']) ? $requestData['password'] : '';
+        
+        if (empty($email) || empty($password)) 
+        {
+            $this->sendResponse(400, ['status' => 'error', 'message' => 'Email and password are required']);
+            return;
+        }
+        
+        try {
+            $stmt = $this->db->prepare("SELECT * FROM users WHERE email = :email");
+            $stmt->bindParam(':email', $email);
+            $stmt->execute();
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$user) {
+                $this->sendResponse(401, ['status' => 'error', 'message' => 'Invalid email or password']);
+                return;
+            }
+            
+            // Verify password
+            list($salt, $hash) = explode(':', $user['password']);
+            $passwordHash = hash('sha256', $salt . $password);
+            
+            if ($passwordHash !== $hash) {
+                $this->sendResponse(401, ['status' => 'error', 'message' => 'Invalid email or password']);
+                return;
+            }
+            
+            // Return success with API key
+            $this->sendResponse(200, [
+                'status' => 'success',
+                'timestamp' => time() * 1000,
+                'data' => [
+                    'api_key' => $user['api_key'],
+                    'email' => $user['email'],
+                    'name' => $user['name']
+                ]
+            ]);
+            
+        } catch (PDOException $e) {
+            $this->sendResponse(500, ['status' => 'error', 'message' => 'Database error']);
+        }
+    }
+
     
             
