@@ -55,11 +55,22 @@ class Database {
             "data" => $data
         ]);
     }
-}
+
+  //This function will validate the apiKey
+  private function isValidApiKey($apikey) {
+        $query = "SELECT id FROM users WHERE api_key = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("s", $apikey);
+        $stmt->execute();
+        $stmt->store_result();
+        return $stmt->num_rows > 0;
+    }
 
 /* QUESTION: Don't you think that it'll be best to use one class only, being the 
 Database? All the functions can be methods for this class. */
 //=========== classes============ to split us Users,Products,Stores etc.
+// I'll comment this section as we can just use one class
+/*
 class User
 {
 //signup and login functions
@@ -69,7 +80,8 @@ class Products
 {
   //products and views
 }
-
+*/
+}
 switch ($requestBody->type) //I edited this too, you can still change it though
 {
    
