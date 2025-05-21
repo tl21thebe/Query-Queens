@@ -78,3 +78,11 @@ CREATE TABLE User_Shoes (
     FOREIGN KEY(h_userID) REFERENCES Users(userID),
     FOREIGN KEY(h_shoeID) REFERENCES Shoes(shoeID)
 );
+
+-- Create Stores table
+CREATE TABLE Stores (
+    storeID INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    shoeID VARCHAR(50) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL
+);
