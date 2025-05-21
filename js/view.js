@@ -18,7 +18,6 @@ function fetchProductDetails(productId)
 {
     const url = 'api.php';
     const data = JSON.stringify({
-        studentnum: STUDENT_NUM,
         apikey: API_KEY,
         type: 'GetAllProducts',
         search:
