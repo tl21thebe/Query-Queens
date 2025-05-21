@@ -3,6 +3,7 @@ include 'header.php';
 ?>
 
 <!-- Add the specific CSS for this page -->
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../css/signup.css">
 
 <div class="signup-container">
@@ -52,7 +53,9 @@ include 'header.php';
             </select>
         </div>
         <div class="form-group">
-            <button type="submit" id="register-btn">Register</button>
+            <div class="button-wrapper">
+                <button type="submit" id="register-btn">Register</button>
+            </div>
         </div>
         <p>Already have an account? <a href="login.php">Login here</a></p>
     </form>
