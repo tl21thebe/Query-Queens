@@ -3,7 +3,7 @@ include 'header.php';
 include 'footer.php';
 ?>
 
-<link rel = "stylesheet" href = "login.css">
+<link rel = "stylesheet" href = "../css/login.css">
 
 <main>
     <h2>Login</h2>
