@@ -168,7 +168,8 @@ class API
         }
     }
 
-    private function handleRegistration($requestData) {
+    private function handleRegistration($requestData) 
+    {
         // Get registration data
         $name = isset($requestData['name']) ? $requestData['name'] : '';
         $surname = isset($requestData['surname']) ? $requestData['surname'] : '';
@@ -225,5 +226,129 @@ class API
         }
     }
 
+    //not too sure about the function to get the products, people in backend will modify this function according to the shoes table
+    private function handleGetAllProducts($requestData) 
+    {
+        
+    }
+
+     private function handleGetPreferences($requestData) 
+     {
+        // Validate API key
+        $apiKey = isset($requestData['api_key']) ? $requestData['api_key'] : '';
+        if (empty($apiKey) || !$this->validateApiKey($apiKey)) 
+        {
+            $this->sendResponse(401, ['status' => 'error', 'message' => 'Invalid API key']);
+            return;
+        }
     
+        // Get user ID from API key
+        $userId = $this->getUserIdFromApiKey($apiKey);
+        if (!$userId) 
+        {
+            $this->sendResponse(401, ['status' => 'error', 'message' => 'User not found']);
+            return;
+        }
+    
+        try {
+            $stmt = $this->db->prepare("SELECT currency, filters FROM user_preferences WHERE user_id = :user_id");
+            $stmt->bindParam(':user_id', $userId);
+            $stmt->execute();
+            $preferences = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+            if ($preferences) 
+            {
+                // Decode JSON filters
+                $preferences['filters'] = $preferences['filters'] ? json_decode($preferences['filters'], true) : null;
+                $this->sendResponse(200, [
+                    'status' => 'success',
+                    'timestamp' => time() * 1000,
+                    'data' => $preferences
+                ]);
+            } else {
+                // Return default preferences if none saved
+                $this->sendResponse(200, 
+                [
+                    'status' => 'success',
+                    'timestamp' => time() * 1000,
+                    'data' => [
+                        'currency' => 'ZAR',
+                        'filters' => null
+                    ]
+                ]);
+            }
+        } 
+        catch (PDOException $e) 
+        {
+            file_put_contents('debug.log', date('Y-m-d H:i:s') . ' - Get preferences error: ' . $e->getMessage() . "\n", FILE_APPEND);
+            $this->sendResponse(500, ['status' => 'error', 'message' => 'Failed to get preferences']);
+        }
+    }
+
+    private function handleSavePreferences($requestData) {
+        // Validate API key
+        $apiKey = $requestData['api_key'] ?? '';
+        $userId = $this->getUserIdFromApiKey($apiKey);
+    
+        if (!$userId) 
+        {
+            $this->sendResponse(401, ['status' => 'error', 'message' => 'Invalid API key']);
+            return;
+    }
+        // Extract preferences
+        $currency = isset($requestData['currency']) ? strtoupper($requestData['currency']) : 'ZAR';
+        $filters = isset($requestData['filters']) ? $requestData['filters'] : null;
+    
+        try {
+            // Check if preferences exist
+            $stmt = $this->db->prepare("SELECT id FROM user_preferences WHERE user_id = :user_id");
+            $stmt->bindParam(':user_id', $userId);
+            $stmt->execute();
+            
+            if ($stmt->fetch()) {
+                // Update existing preferences
+                $stmt = $this->db->prepare("UPDATE user_preferences SET currency = :currency, filters = :filters WHERE user_id = :user_id");
+            } else {
+                // Insert new preferences
+                $stmt = $this->db->prepare("INSERT INTO user_preferences (user_id, currency, filters) VALUES (:user_id, :currency, :filters)");
+            }
+            
+            $stmt->bindParam(':user_id', $userId);
+            $stmt->bindParam(':currency', $currency);
+            $stmt->bindValue(':filters', $filters ? json_encode($filters) : null);
+            $stmt->execute();
+    
+            $this->sendResponse(200, [
+                'status' => 'success',
+                'timestamp' => time() * 1000,
+                'data' => 'Preferences saved successfully'
+            ]);
+        } catch (PDOException $e) {
+            file_put_contents('debug.log', date('Y-m-d H:i:s') . ' - Save preferences error: ' . $e->getMessage() . "\n", FILE_APPEND);
+            $this->sendResponse(500, ['status' => 'error', 'message' => 'Failed to save preferences']);
+        }
+    }
+
+    private function getUserIdFromApiKey($apiKey) 
+    {
+        try 
+        {
+            $stmt = $this->db->prepare("SELECT id FROM users WHERE api_key = :api_key");
+            $stmt->bindParam(':api_key', $apiKey);
+            $stmt->execute();
+            return $stmt->fetchColumn();
+        } catch (PDOException $e) 
+        {
+            file_put_contents('debug.log', date('Y-m-d H:i:s') . ' - Get user ID error: ' . $e->getMessage() . "\n", FILE_APPEND);
+            return false;
+        }
+    }
+
+    private function sanitizeField($field) 
+    {
+        // Remove any non-alphanumeric characters except underscores
+        return preg_replace('/[^a-zA-Z0-9_]/', '', $field);
+    }
+
+
             
