@@ -168,5 +168,62 @@ class API
         }
     }
 
+    private function handleRegistration($requestData) {
+        // Get registration data
+        $name = isset($requestData['name']) ? $requestData['name'] : '';
+        $surname = isset($requestData['surname']) ? $requestData['surname'] : '';
+        $email = isset($requestData['email']) ? $requestData['email'] : '';
+        $password = isset($requestData['password']) ? $requestData['password'] : '';
+        $type = isset($requestData['user_type']) ? $requestData['user_type'] : ''; 
+        
+        // Debug registration data
+        file_put_contents('debug.log', date('Y-m-d H:i:s') . ' - Registration data: ' . 
+            "name=$name, surname=$surname, email=$email, type=$type" . "\n", FILE_APPEND);
+
+        // Validate data
+        if (empty($name) || empty($surname) || empty($email) || empty($password) || empty($type)) {
+            $this->sendResponse(400, ['status' => 'error', 'message' => 'All fields are required']);
+            return;
+        }
+
+        // Validate email format
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $this->sendResponse(400, ['status' => 'error', 'message' => 'Invalid email format']);
+            return;
+        }
+
+        // Validate password
+        if (!$this->validatePassword($password)) {
+            $this->sendResponse(400, ['status' => 'error', 'message' => 'Password does not meet requirements']);
+            return;
+        }
+
+        // Check if the email already exists
+        if ($this->emailExists($email)) {
+            $this->sendResponse(409, ['status' => 'error', 'message' => 'Email already registered']);
+            return;
+        }
+
+        // Hash the password
+        $hashedPassword = $this->hashPassword($password);
+        
+        // Generate API key
+        $apiKey = $this->generateApiKey();
+
+        // Insert user into the database
+        if ($this->insertUser($name, $surname, $email, $hashedPassword, $type, $apiKey)) {
+            // Send success response
+            $this->sendResponse(200, [
+                'status' => 'success',
+                'timestamp' => time() * 1000,
+                'data' => [
+                    'api_key' => $apiKey
+                ]
+            ]);
+        } else {
+            $this->sendResponse(500, ['status' => 'error', 'message' => 'Failed to register user']);
+        }
+    }
+
     
             
