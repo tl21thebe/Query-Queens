@@ -1,11 +1,12 @@
-<?php
-include 'header.php'; 
-?>
-
-<!-- Add the specific CSS for this page -->
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../css/signup.css">
-
+<!DOCTYPE html>
+<html lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/signup.css">
+</head>
+<body>
 <div class="signup-container">
     <h2>Create an Account</h2>
     <div id="error-message" class="error-message"></div>
@@ -62,7 +63,5 @@ include 'header.php';
 </div>
 
 <script src="../js/signup.js"></script>
-
-<?php include_once 'footer.php'; ?>
-
-
+</body>
+</html>
