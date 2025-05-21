@@ -7,7 +7,8 @@ if (session_status() === PHP_SESSION_NONE)
 
 if (!function_exists('isLoggedIn')) 
 {
-    function isLoggedIn() {
+    function isLoggedIn() 
+    {
         return isset($_SESSION['user']) && !empty($_SESSION['user']);
     }
 }
@@ -43,7 +44,7 @@ $theme_class = $current_theme === 'dark' ? 'dark-theme' : '';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compare It</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="<?php echo $base_url; ?>css/style.css">
     <script>
         // Early theme initialization
         (function() 
@@ -67,14 +68,14 @@ $theme_class = $current_theme === 'dark' ? 'dark-theme' : '';
 </head>
 <body class = "<?php echo $theme_class; ?>">
 <header>
-    <nav>
+    <nav class = "navbar">
         <div class="theme-toggle-container">
             <button id="theme-toggle">
                 <?php echo ($current_theme === 'dark') ? 'Light Mode' : 'Dark Mode'; ?>
             </button>
         </div>
 
-        <div class="navigation-links">
+        <div class="nav-links">
             <a href="<?php echo $base_url; ?>CompareIt.php">CompareIt.php</a>
             <a href="<?php echo $base_url; ?>ratedProducts.php">TOP RATED</a>
             <a href="<?php echo $base_url; ?>deals.php">DEALS</a>
@@ -93,6 +94,6 @@ $theme_class = $current_theme === 'dark' ? 'dark-theme' : '';
     </nav>
 </header>
 <!-- Load theme script after DOM is ready -->
-<script src="../js/theme.js"></script>
+<script src="<?php echo $base_url; ?>js/theme.js"></script>
 
 <main>
