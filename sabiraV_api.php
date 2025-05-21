@@ -79,6 +79,31 @@ function handleLogin($pdo) {
     }
 }
 
+function isValidApiKey($pdo, $apikey) {
+    $stmt = $pdo->prepare("SELECT userID FROM users WHERE apiKey = ?");
+    $stmt->execute([$apikey]);
+    return $stmt->fetchColumn() !== false;
+}
+
+function getUserIdFromApiKey($pdo, $apikey) {
+    $stmt = $pdo->prepare("SELECT userID FROM users WHERE apiKey = ?");
+    $stmt->execute([$apikey]);
+    $userId = $stmt->fetchColumn();
+    return $userId !== false ? $userId : null;
+}
+
+function requireValidApiKey($pdo) {
+    $headers = getallheaders();
+    $apikey = $headers['Authorization'] ?? '';
+
+    if (!$apikey || !isValidApiKey($pdo, $apikey)) {
+        echo json_encode(["status" => "error", "data" => "Invalid or missing API key"]);
+        exit;
+    }
+
+    return $apikey;
+}
+
 function handleGetAllProducts($pdo) {
     $stmt = $pdo->query("SELECT s.shoeID, s.name, s.price, s.image_url, b.name AS brand, c.type AS category
                          FROM shoes s
@@ -88,4 +113,5 @@ function handleGetAllProducts($pdo) {
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     echo json_encode(["status" => "success", "data" => $products]);
 }
+
 ?>
