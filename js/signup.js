@@ -179,7 +179,7 @@ function registerUser(name, surname, email, password, userType)
     });
     
     // Create and send POST request using fetch
-    fetch('../api.php', 
+    fetch('api.php', 
     {
         method: 'POST',
         body: formData

@@ -76,7 +76,7 @@ $theme_class = $current_theme === 'dark' ? 'dark-theme' : '';
 
         <div class="navigation-links">
             <a href="<?php echo $base_url; ?>CompareIt.php">CompareIt.php</a>
-            <a href="<?php echo $base_url; ?>shopping.php">SHOPPING</a>
+            <a href="<?php echo $base_url; ?>ratedProducts.php">TOP RATED</a>
             <a href="<?php echo $base_url; ?>deals.php">DEALS</a>
             <a href="<?php echo $base_url; ?>login.php">LOGIN</a>
             <a href="<?php echo $base_url; ?>signup.php">SIGN IN</a>
