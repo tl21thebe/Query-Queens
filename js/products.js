@@ -6,7 +6,7 @@
  */
 
 // Base URL for API requests
-const API_BASE_URL = "api.php";
+const API_BASE_URL = "../php/api.php";//just saying that you may need to adjust the path when testing because i placed the api in my php folders
 
 /**
  * Fetch all available products
@@ -14,22 +14,55 @@ const API_BASE_URL = "api.php";
  * @param {string} apiKey - User API key for authentication
  * @returns {Promise} - Promise that resolves to product data
  */
-async function getAllProducts(apiKey) {
-  try {
-    //took out the header auth
-    const response = await fetch(`${API_BASE_URL}?endpoint=getAllProducts`);
+async function getAllProducts() 
+{
+    try {
+        const response = await fetch(`${API_BASE_URL}?type=getAllProducts`);
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Failed to fetch products");
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            return data.data;
+        } else {
+            throw new Error(data.data || "Failed to fetch products");
+        }
+
+    } catch (error) {
+        console.error("Error fetching products:", error);
+        throw error;
     }
+}
 
-    const data = await response.json();
-    return data.data;
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    throw error;
-  }
+/**
+ * Fetch top rated products from the API
+ * 
+ * @returns {Promise} - Promise that resolves to rated product data
+ */
+async function getRatedProducts() 
+{
+    try {
+        const response = await fetch(`${API_BASE_URL}?type=GetRatedProducts`);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            return data.data;
+        } else {
+            throw new Error(data.data || "Failed to fetch rated products");
+        }
+
+    } catch (error) {
+        console.error("Error fetching rated products:", error);
+        throw error;
+    }
 }
 
 /**
