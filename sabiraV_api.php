@@ -70,6 +70,39 @@ case 'getBrands':
         handleDeleteBrand($pdo);
         break;
 
+ case 'getCategories':
+    handleGetCategories($pdo);
+    break;
+
+case 'addCategory':
+    handleAddCategory($pdo);
+    break;
+
+case 'updateCategory':
+    handleUpdateCategory($pdo);
+    break;
+
+case 'deleteCategory':
+    handleDeleteCategory($pdo);
+    break;
+
+case 'getStores':
+    handleGetStores($pdo);
+    break;
+
+case 'addStore':
+    handleAddStore($pdo);
+    break;
+
+case 'updateStore':
+    handleUpdateStore($pdo);
+    break;
+
+case 'deleteStore':
+    handleDeleteStore($pdo);
+    break;
+
+
 
     default:
         echo json_encode(["status" => "error", "data" => "Unknown request type"]);
@@ -388,5 +421,18 @@ function handleDeleteBrand($pdo) {
         echo json_encode(["status" => "error", "data" => "Database error: " . $e->getMessage()]);
     }
 }
+
+function handleGetCategories($pdo) {
+    $stmt = $pdo->query("SELECT categoryID, type FROM categories ORDER BY type");
+    $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    echo json_encode(["status" => "success", "data" => $categories]);
+}
+
+function handleGetStores($pdo) {
+    $stmt = $pdo->query("SELECT storeID, name FROM stores ORDER BY name");
+    $stores = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    echo json_encode(["status" => "success", "data" => $stores]);
+}
+
 
 ?>
