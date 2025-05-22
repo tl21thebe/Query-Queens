@@ -183,20 +183,55 @@ function generateStarRating(rating) {
     return `${stars} (${rating})`;
 }
 
-function setupImageCarousel(images) 
-{
+function displayError(message) {
+    const productView = document.querySelector('.product-view');
+    productView.innerHTML = `
+        <div class="error-message">
+            <h2>Error</h2>
+            <p>${message}</p>
+            <a href="products.php" class="btn btn-primary">Back to Products</a>
+        </div>
+    `;
+}
+
+// Setup image carousel (if you have multiple images)
+function setupImageCarousel(images) {
     const thumbnailsContainer = document.querySelector(".image-thumbnails");
     thumbnailsContainer.innerHTML = "";
 
-    images.forEach((image, index) => 
-    {
+    if (!images || images.length === 0) {
+        return;
+    }
+
+    const mainImage = document.getElementById("main-image");
+    
+    images.forEach((image, index) => {
         const img = document.createElement("img");
         img.src = image;
         img.alt = `Product Image ${index + 1}`;
         img.classList.add("thumbnail");
+        
+        if (index === 0) {
+            img.classList.add("active");
+        }
+        
         img.addEventListener("click", () => {
-            document.getElementById("main-image").src = image;
+            mainImage.src = image;
+            document.querySelectorAll('.thumbnail').forEach(thumb => thumb.classList.remove('active'));
+            img.classList.add('active');
         });
+        
         thumbnailsContainer.appendChild(img);
     });
 }
+
+// Add review functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const addReviewBtn = document.getElementById('add-review-btn');
+    if (addReviewBtn) {
+        addReviewBtn.addEventListener('click', function() {
+            // You can implement a modal or redirect to a review form
+            alert('Review functionality coming soon! Please check back later.');
+        });
+    }
+});
