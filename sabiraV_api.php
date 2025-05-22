@@ -54,6 +54,23 @@ switch ($type) {
         handledeleteProduct($pdo);
         break;
 
+case 'getBrands':
+         handleGetBrands($pdo);
+        break;
+
+    case 'addBrand':
+        handleAddBrand($pdo);
+        break;
+
+    case 'updateBrand':
+        handleUpdateBrand($pdo);
+        break;
+
+    case 'deleteBrand':
+        handleDeleteBrand($pdo);
+        break;
+
+
     default:
         echo json_encode(["status" => "error", "data" => "Unknown request type"]);
 }
