@@ -151,6 +151,108 @@ async function editProduct(productData) {
 }
 
 /**
+ * Delete a product (requires API key)
+ * 
+ * @param {number} shoeID - ID of the product to delete
+ * @returns {Promise} - Promise that resolves to delete result
+ */
+async function deleteProduct(shoeID) {
+    try {
+        const response = await fetch(API_BASE_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${getApiKey()}`
+            },
+            body: JSON.stringify({
+                type: 'deleteProduct',
+                shoeID: shoeID
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            return data;
+        } else {
+            throw new Error(data.data || "Failed to delete product");
+        }
+
+    } catch (error) {
+        console.error("Error deleting product:", error);
+        throw error;
+    }
+}
+
+/**
+ * Get all brands
+ * 
+ * @returns {Promise} - Promise that resolves to brands data
+ */
+async function getBrands() {
+    try {
+        const response = await fetch(`${API_BASE_URL}?type=getBrands`);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            return data.data;
+        } else {
+            throw new Error(data.data || "Failed to fetch brands");
+        }
+
+    } catch (error) {
+        console.error("Error fetching brands:", error);
+        throw error;
+    }
+}
+
+/**
+ * Filter products by brand
+ * 
+ * @param {string} brandName - Brand name to filter by
+ * @returns {Promise} - Promise that resolves to filtered product data
+ */
+async function getProductsByBrand(brandName) {
+    try {
+        const allProducts = await getAllProducts();
+        return allProducts.filter(product => 
+            product.brand && product.brand.toLowerCase() === brandName.toLowerCase()
+        );
+    } catch (error) {
+        console.error(`Error filtering products by brand ${brandName}:`, error);
+        throw error;
+    }
+}
+
+/**
+ * Filter products by category
+ * 
+ * @param {string} categoryName - Category name to filter by
+ * @returns {Promise} - Promise that resolves to filtered product data
+ */
+async function getProductsByCategory(categoryName) {
+    try {
+        const allProducts = await getAllProducts();
+        return allProducts.filter(product => 
+            product.category && product.category.toLowerCase() === categoryName.toLowerCase()
+        );
+    } catch (error) {
+        console.error(`Error filtering products by category ${categoryName}:`, error);
+        throw error;
+    }
+}
+
+
+/**
  * Fetch product by ID
  * 
  * @param {string} apiKey - User API key for authentication
