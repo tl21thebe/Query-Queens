@@ -477,5 +477,49 @@ function handleGetStores($pdo) {
     echo json_encode(["status" => "success", "data" => $stores]);
 }
 
+function handleAddStore($pdo) {
+    $input = json_decode(file_get_contents("php://input"), true);
+    $name = trim($input['name'] ?? '');
+    $email = trim($input['email'] ?? '');
+    if (!$name || !$email) {
+        echo json_encode(["status" => "error", "data" => "Store name and email required"]);
+        return;
+    }
+
+    $stmt = $pdo->prepare("INSERT INTO stores (name,email) VALUES (?,?)");
+    $stmt->execute([$name,$email]);
+    echo json_encode(["status" => "success", "data" => "Store added"]);
+}
+
+function handleUpdateStore($pdo) {
+    $input = json_decode(file_get_contents("php://input"), true);
+    $storeID = $input['storeID'] ?? null;
+    $name = trim($input['name'] ?? '');
+
+    if (!$storeID || !$name) {
+        echo json_encode(["status" => "error", "data" => "ID and name required"]);
+        return;
+    }
+
+    $stmt = $pdo->prepare("UPDATE stores SET name = ? WHERE storeID = ?");
+    $stmt->execute([$name, $storeID]);
+    echo json_encode(["status" => "success", "data" => "Store updated"]);
+}
+
+function handleDeleteStore($pdo) {
+    $input = json_decode(file_get_contents("php://input"), true);
+    $storeID = $input['storeID'] ?? null;
+
+    if (!$storeID) {
+        echo json_encode(["status" => "error", "data" => "ID required"]);
+        return;
+    }
+
+    $stmt = $pdo->prepare("DELETE FROM stores WHERE storeID = ?");
+    $stmt->execute([$storeID]);
+    echo json_encode(["status" => "success", "data" => "Store deleted"]);
+}
+
+
 
 ?>
