@@ -109,6 +109,9 @@ case 'productDetails':
 case 'addReviews':
     handleAddReview($pdo);
     break;
+    case 'getSingleProduct':
+        handleGetSingleProduct($pdo);
+        break;
 
 
     default:
@@ -598,6 +601,107 @@ function handleAddReview($pdo) {
     $stmt->execute([$description, $userID, $shoeID]);
 
     echo json_encode(["status" => "success", "data" => "Review added"]);
+}
+
+function handleGetSingleProduct($pdo) {
+    $input = json_decode(file_get_contents("php://input"), true);
+    $shoeID = $input['shoeID'] ?? $_GET['shoeID'] ?? null;
+
+    if (!$shoeID) {
+        echo json_encode(["status" => "error", "data" => "Shoe ID required"]);
+        return;
+    }
+
+    try {
+        // Get the main product information
+        $stmt = $pdo->prepare("
+            SELECT 
+                s.shoeID, 
+                s.name, 
+                s.price, 
+                s.description, 
+                s.material, 
+                s.gender, 
+                s.image_url, 
+                s.size_range, 
+                s.colour, 
+                s.releaseDate,
+                b.name AS brand_name,
+                c.catType AS category_name
+            FROM shoes s
+            LEFT JOIN brands b ON s.brandID = b.brandID
+            LEFT JOIN categories c ON s.categoryID = c.categoryID
+            WHERE s.shoeID = ?
+        ");
+        
+        $stmt->execute([$shoeID]);
+        $product = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$product) {
+            echo json_encode(["status" => "error", "data" => "Product not found"]);
+            return;
+        }
+
+        // Get store information for this product
+        // Based on your store table structure, we need to get stores that sell this shoe
+        $storeStmt = $pdo->prepare("
+            SELECT 
+                st.storeID,
+                st.name as store_name,
+                st.email as store_email,
+                s.price as store_price
+            FROM stores st
+            CROSS JOIN shoes s
+            WHERE s.shoeID = ?
+            ORDER BY s.price ASC
+        ");
+        
+        $storeStmt->execute([$shoeID]);
+        $stores = $storeStmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Get reviews for this product - Using correct column names
+        // Try R_shoesID first (if this fails, change to productID)
+        $reviewStmt = $pdo->prepare("
+            SELECT 
+                r.reviewID,
+                r.rating,
+                r.description as review_text,
+                u.name as reviewer_name
+            FROM reviews_rating r
+            LEFT JOIN users u ON r.R_userID = u.userID
+            WHERE r.R_shoesID = ?
+            ORDER BY r.reviewID DESC
+            LIMIT 10
+        ");
+        
+        $reviewStmt->execute([$shoeID]);
+        $reviews = $reviewStmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Add review_date since it doesn't exist in the table
+        foreach ($reviews as &$review) {
+            $review['review_date'] = date('Y-m-d'); // Default to today's date
+        }
+
+        // Calculate average rating using R_shoesID
+        $avgRatingStmt = $pdo->prepare("
+            SELECT AVG(rating) as avg_rating, COUNT(*) as review_count
+            FROM reviews_rating
+            WHERE R_shoesID = ?
+        ");
+        
+        $avgRatingStmt->execute([$shoeID]);
+        $ratingData = $avgRatingStmt->fetch(PDO::FETCH_ASSOC);
+
+        $product['stores'] = $stores;
+        $product['reviews'] = $reviews;
+        $product['avg_rating'] = round($ratingData['avg_rating'] ?? 0, 1);
+        $product['review_count'] = $ratingData['review_count'] ?? 0;
+
+        echo json_encode(["status" => "success", "data" => $product]);
+        
+    } catch (PDOException $e) {
+        echo json_encode(["status" => "error", "data" => "Database error: " . $e->getMessage()]);
+    }
 }
 
 
