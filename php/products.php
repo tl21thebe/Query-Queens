@@ -51,6 +51,31 @@
           <option value="">All Brands</option>
         </select>
       </div>
+
+      <div class="filter-group">
+        <label for="min-price">Min Price (ZAR):</label>
+        <input type="number" id="min-price" placeholder="0" min="0">
+      </div>
+      
+      <div class="filter-group">
+        <label for="max-price">Max Price (ZAR):</label>
+        <input type="number" id="max-price" placeholder="No limit" min="0">
+      </div>
+    </div>
+    
+    <div class="filter-actions">
+      <button onclick="applyFilters()" class="btn btn-primary">Apply Filters</button>
+      <button onclick="clearFilters()" class="btn btn-secondary">Clear Filters</button>
+    </div>
+  </div>
+
+  <!-- Products Container -->
+  <div class="products-holder">Loading products...</div>
+
+  <script src="../js/products.js"></script>
+</body>
+</html>
+<?php include('footer.php'); ?>
       
 
 
