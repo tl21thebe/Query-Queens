@@ -42,6 +42,10 @@ switch ($type) {
        handleGetRatedProducts($pdo);
         break;
 
+    case 'addProduct':
+        handleaddProduct($pdo);
+        break;
+
     default:
         echo json_encode(["status" => "error", "data" => "Unknown request type"]);
 }
@@ -235,5 +239,27 @@ function handleGetRatedProducts($pdo) {
     } catch (PDOException $e) {
         echo json_encode(["status" => "error", "data" => "Database error: " . $e->getMessage()]);
     }
+}
+
+function handleaddProduct($pdo){
+    $input = json_decode(file_get_contents("php://input"), true);
+
+    $name = $input['name'] ?? '';
+    $price = $input['price'] ?? 0;
+    $brandID = $input['brandID'] ?? null;
+    $categoryID = $input['categoryID'] ?? null;
+    $image_url = $input['image_url'] ?? '';
+    $description = $input['description'] ?? '';
+
+    if (!$name || !$brandID || !$categoryID) {
+        echo json_encode(["status" => "error", "data" => "Missing required fields"]);
+        return;
+    }
+
+    $stmt = $pdo->prepare("INSERT INTO shoes (name, price, brandID, categoryID, image_url, description, releaseDate, material, gender, colour)
+                           VALUES (?, ?, ?, ?, ?, ?, CURDATE(), '', 'Prefer not to say', 'Black')");
+    $stmt->execute([$name, $price, $brandID, $categoryID, $image_url, $description]);
+
+    echo json_encode(["status" => "success", "data" => "Product added successfully"]);
 }
 ?>
