@@ -403,223 +403,156 @@ function populateFilters(products) {
     });
 }
 
-
-
-
 /**
- * Fetch product by ID
- * 
- * @param {string} apiKey - User API key for authentication
- * @param {number} productId - ID of the product to retrieve
- * @returns {Promise} - Promise that resolves to product data
+ * Apply filters to products
  */
-async function getProductById(apiKey, productId) {
-  try {
-    const response = await fetch(`${API_BASE_URL}?endpoint=getProductById`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({ product_id: productId })
-    });
+async function applyFilters() {
+    try {
+        const searchTerm = document.getElementById('search-bar').value.toLowerCase();
+        const selectedCategory = document.getElementById('category-filter').value;
+        const selectedBrand = document.getElementById('brand-filter').value;
+        const minPrice = parseFloat(document.getElementById('min-price').value) || 0;
+        const maxPrice = parseFloat(document.getElementById('max-price').value) || Infinity;
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Failed to fetch product");
+        const allProducts = await getAllProducts();
+        
+        const filteredProducts = allProducts.filter(product => {
+            // Search filter
+            const matchesSearch = !searchTerm || 
+                (product.name && product.name.toLowerCase().includes(searchTerm)) ||
+                (product.brand && product.brand.toLowerCase().includes(searchTerm));
+            
+            // Category filter
+            const matchesCategory = !selectedCategory || product.category === selectedCategory;
+            
+            // Brand filter
+            const matchesBrand = !selectedBrand || product.brand === selectedBrand;
+            
+            // Price filter
+            const productPrice = parseFloat(product.price) || 0;
+            const matchesPrice = productPrice >= minPrice && productPrice <= maxPrice;
+            
+            return matchesSearch && matchesCategory && matchesBrand && matchesPrice;
+        });
+
+        displayProducts(filteredProducts);
+    } catch (error) {
+        console.error('Error applying filters:', error);
     }
-
-    const data = await response.json();
-    return data.product;
-  } catch (error) {
-    console.error(`Error fetching product ${productId}:`, error);
-    throw error;
-  }
 }
 
 /**
- * Filter products by category
- * 
- * @param {string} apiKey - User API key for authentication
- * @param {string} category - Category to filter by
- * @returns {Promise} - Promise that resolves to filtered product data
+ * Clear all filters and show all products
  */
-async function getProductsByCategory(apiKey, category) {
-  try {
-    const allProducts = await getAllProducts(apiKey);
-    return allProducts.filter(product => product.categories.includes(category));
-  } catch (error) {
-    console.error(`Error filtering products by category ${category}:`, error);
-    throw error;
-  }
-}
-
-/**
- * Filter products by availability
- * 
- * @param {string} apiKey - User API key for authentication
- * @param {boolean} isAvailable - Availability status to filter by
- * @returns {Promise} - Promise that resolves to filtered product data
- */
-async function getProductsByAvailability(apiKey, isAvailable) {
-  try {
-    const allProducts = await getAllProducts(apiKey);
-    return allProducts.filter(product => product.is_available === isAvailable);
-  } catch (error) {
-    console.error(`Error filtering products by availability:`, error);
-    throw error;
-  }
-}
-
-/**
- * Search products by name/title
- * 
- * @param {string} apiKey - User API key for authentication
- * @param {string} searchTerm - Term to search for in product titles
- * @returns {Promise} - Promise that resolves to search results
- */
-async function searchProducts(apiKey, searchTerm) {
-  try {
-    const allProducts = await getAllProducts(apiKey);
-    const searchTermLower = searchTerm.toLowerCase();
+async function clearFilters() {
+    document.getElementById('search-bar').value = '';
+    document.getElementById('category-filter').value = '';
+    document.getElementById('brand-filter').value = '';
+    document.getElementById('min-price').value = '';
+    document.getElementById('max-price').value = '';
     
-    return allProducts.filter(product => 
-      product.title.toLowerCase().includes(searchTermLower) ||
-      product.description.toLowerCase().includes(searchTermLower) ||
-      product.brand.toLowerCase().includes(searchTermLower)
-    );
-  } catch (error) {
-    console.error(`Error searching products for "${searchTerm}":`, error);
-    throw error;
-  }
-}
-
-/**
- * Update product availability status
- * 
- * @param {string} apiKey - User API key for authentication
- * @param {number} productId - ID of the product to update
- * @param {boolean} isAvailable - New availability status
- * @returns {Promise} - Promise that resolves to update result
- */
-async function updateProductAvailability(apiKey, productId, isAvailable) {
-  try {
-    const response = await fetch(`${API_BASE_URL}?endpoint=updateProduct`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({
-        product_id: productId,
-        is_available: isAvailable ? 1 : 0
-      })
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Failed to update product availability");
+    try {
+        const products = await getAllProducts();
+        displayProducts(products);
+    } catch (error) {
+        console.error('Error clearing filters:', error);
     }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error(`Error updating product ${productId} availability:`, error);
-    throw error;
-  }
 }
 
 /**
- * Get distinct product categories
- * 
- * @param {string} apiKey - User API key for authentication
- * @returns {Promise} - Promise that resolves to array of unique categories
+ * Handle search functionality
  */
-async function getProductCategories(apiKey) {
-  try {
-    const allProducts = await getAllProducts(apiKey);
-    const categoriesSet = new Set();
-    
-    allProducts.forEach(product => {
-      const productCategories = product.categories.split(',');
-      productCategories.forEach(category => categoriesSet.add(category.trim()));
-    });
-    
-    return Array.from(categoriesSet);
-  } catch (error) {
-    console.error("Error fetching product categories:", error);
-    throw error;
-  }
+async function handleSearch() {
+    await applyFilters();
 }
 
 /**
- * Get products by brand
- * 
- * @param {string} apiKey - User API key for authentication
- * @param {string} brand - Brand name to filter by
- * @returns {Promise} - Promise that resolves to filtered product data
+ * Initialize the products page
  */
-async function getProductsByBrand(apiKey, brand) 
-{
-  try {
-    const allProducts = await getAllProducts(apiKey);
-    return allProducts.filter(product => 
-      product.brand.toLowerCase() === brand.toLowerCase()
-    );
-  } catch (error) {
-    console.error(`Error filtering products by brand ${brand}:`, error);
-    throw error;
-  }
+async function initializeProductsPage() {
+    try {
+        const products = await getAllProducts();
+        displayProducts(products);
+        populateFilters(products);
+    } catch (error) {
+        console.error('Failed to load products:', error);
+        const productsHolder = document.querySelector('.products-holder');
+        productsHolder.innerHTML = '<p>Failed to load products. Please try again later.</p>';
+    }
 }
 
-function renderProductList(products, container) 
-{
-  container.innerHTML = '';
-  
-  if (products.length === 0) 
-  {
-    container.innerHTML = '<p>No products found.</p>';
-    return;
-  }
-
-  products.forEach(product => {
-    const productElement = document.createElement('div');
-    productElement.className = 'product-item';
-    productElement.innerHTML = `
-      <div class="product-image">
-        <img src="${product.image_url}" alt="${product.title}" onerror="this.src='images/default.jpg'">
-      </div>
-      <div class="product-info">
-        <h3>${product.title}</h3>
-        <p class="brand">${product.brand}</p>
-        <p class="price">ZAR ${product.final_price}</p>
-        <p class="description">${product.description.substring(0, 100)}...</p>
-        <button class="view-details" data-id="${product.id}">View Details</button>
-      </div>
-    `;
+/**
+ * Add event listeners and initialize page when DOM is loaded
+ */
+document.addEventListener('DOMContentLoaded', function() {
+    initializeProductsPage();
     
-    container.appendChild(productElement);
-  });
+    // Add event listeners for real-time search
+    const searchBar = document.getElementById('search-bar');
+    if (searchBar) {
+        searchBar.addEventListener('input', debounce(applyFilters, 300));
+    }
+    
+    // Main search functionality
+    const mainSearch = document.getElementById('main-search');
+    if (mainSearch) {
+        mainSearch.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleMainSearch();
+            }
+        });
+    }
+    
+    // Add event listeners for filter changes
+    const categoryFilter = document.getElementById('category-filter');
+    if (categoryFilter) {
+        categoryFilter.addEventListener('change', applyFilters);
+    }
+    
+    const brandFilter = document.getElementById('brand-filter');
+    if (brandFilter) {
+        brandFilter.addEventListener('change', applyFilters);
+    }
+    
+    const minPrice = document.getElementById('min-price');
+    if (minPrice) {
+        minPrice.addEventListener('input', debounce(applyFilters, 500));
+    }
+    
+    const maxPrice = document.getElementById('max-price');
+    if (maxPrice) {
+        maxPrice.addEventListener('input', debounce(applyFilters, 500));
+    }
+});
 
-  // Add event listeners to all view buttons
-  document.querySelectorAll('.view-details').forEach(button => {
-    button.addEventListener('click', (e) => {
-      const productId = e.target.getAttribute('data-id');
-      window.location.href = `view.php?id=${productId}`;
-    });
-  });
+/**
+ * Debounce function to limit API calls
+ */
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
 }
 
-// Export all functions
-export 
-{
-  getAllProducts,
-  getProductById,
-  getProductsByCategory,
-  getProductsByAvailability,
-  searchProducts,
-  updateProductAvailability,
-  getProductCategories,
-  getProductsByBrand,
-  renderProductList
-};
+// Export functions for use in other files
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        getAllProducts,
+        getRatedProducts,
+        addProduct,
+        editProduct,
+        deleteProduct,
+        getBrands,
+        getProductsByBrand, 
+        getProductsByCategory,
+        searchProducts,
+        displayProducts
+    };
+}
+
