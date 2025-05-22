@@ -1,40 +1,58 @@
 <?php include('header.php'); ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Product Listing</title>
-  <link rel="stylesheet" href="../css/product.css">
-  <!-- <link rel="stylesheet" href="../css/product.css"> -->
-  <!--<script type="module" src="js/getProducts.js"></script> //no need for this-->
-
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compare Shoe Prices - Product Listing</title>
+  <link rel="stylesheet" href="../css/products.css">
 </head>
 <body>
-  <h1>Available Products</h1>
-  <div id="product-list">Loading products...</div>
-  <script type="module">
-  import { getAllProducts } from '../js/product.js';
 
-  async function loadProducts() 
-  {
-    const container = document.getElementById('product-list');
-    try 
-    {
-      const products = await getAllProducts();
-      renderProductList(products, container);
-    } 
-    catch (error) 
-    {
-      container.innerHTML = `<p>Error loading products: ${error.message}</p>`;
-    }
-  }
-  loadProducts();
-</script>
-  
-</body>
-</html>
+  <!-- Slogan Section -->
+  <div class="slogan-section">
+    <div class="slogan-text">
+      <h1>Step Into Your Dreams</h1>
+      <p>Find the perfect pair at the perfect price - Where every step counts!</p>
+    </div>
 
-<?php include('footer.php'); ?>
+     <!-- Search Container in Slogan Section -->
+    <div class="search-container">
+      <input type="text" id="main-search" placeholder="Search for your perfect shoes...">
+      <button onclick="handleMainSearch()">🔍</button>
+    </div>
+  </div>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <h1>Compare Shoe Prices</h1>
+    <p>Find and compare the best prices on your favorite shoes</p>
+  </div>
+
+   <!-- Filters Section -->
+  <div class="filters-section">
+    <h3>Filter Products</h3>
+    <div class="filters-row">
+      <div class="filter-group">
+        <label for="search-bar">Search:</label>
+        <input type="text" id="search-bar" placeholder="Search for shoes...">
+      </div>
+      
+       <div class="filter-group">
+        <label for="category-filter">Category:</label>
+        <select id="category-filter">
+          <option value="">All Categories</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label for="brand-filter">Brand:</label>
+        <select id="brand-filter">
+          <option value="">All Brands</option>
+        </select>
+      </div>
+      
+
+
+
 
