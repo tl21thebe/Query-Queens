@@ -262,7 +262,7 @@ function requireValidApiKey($pdo) {
 function handleGetAllProducts($pdo) {
     try {
         $stmt = $pdo->query("SELECT s.shoeID, s.name, s.price, s.image_url, 
-                              b.name AS brand, c.type AS category
+                              b.name AS brand, c.catType AS category
                               FROM shoes s
                               LEFT JOIN brands b ON s.brandID = b.brandID
                               LEFT JOIN categories c ON s.categoryID = c.categoryID
