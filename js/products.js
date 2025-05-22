@@ -66,6 +66,91 @@ async function getRatedProducts()
 }
 
 /**
+ * Add a new product (requires API key)
+ * 
+ * @param {Object} productData - Product information
+ * @returns {Promise} - Promise that resolves to add result
+ */
+async function addProduct(productData) {
+    try {
+        const response = await fetch(API_BASE_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${getApiKey()}`
+            },
+            body: JSON.stringify({
+                type: 'addProduct',
+                name: productData.name,
+                price: productData.price,
+                brandID: productData.brandID,
+                categoryID: productData.categoryID,
+                image_url: productData.image_url || '',
+                description: productData.description || ''
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            return data;
+        } else {
+            throw new Error(data.data || "Failed to add product");
+        }
+
+    } catch (error) {
+        console.error("Error adding product:", error);
+        throw error;
+    }
+}
+
+/**
+ * Edit an existing product (requires API key)
+ * 
+ * @param {Object} productData - Product information including shoeID
+ * @returns {Promise} - Promise that resolves to edit result
+ */
+async function editProduct(productData) {
+    try {
+        const response = await fetch(API_BASE_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${getApiKey()}`
+            },
+            body: JSON.stringify({
+                type: 'editProduct',
+                shoeID: productData.shoeID,
+                name: productData.name,
+                price: productData.price,
+                description: productData.description || '',
+                image_url: productData.image_url || ''
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            return data;
+        } else {
+            throw new Error(data.data || "Failed to edit product");
+        }
+
+    } catch (error) {
+        console.error("Error editing product:", error);
+        throw error;
+    }
+}
+
+/**
  * Fetch product by ID
  * 
  * @param {string} apiKey - User API key for authentication
