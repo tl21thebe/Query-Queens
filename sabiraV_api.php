@@ -324,4 +324,69 @@ function handledeleteProduct($pdo) {
 
 }
 
+function handleGetBrands($pdo) {
+    try {
+        $stmt = $pdo->query("SELECT brandID, name FROM brands ORDER BY name");
+        $brands = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode(["status" => "success", "data" => $brands]);
+    } catch (PDOException $e) {
+        echo json_encode(["status" => "error", "data" => "Database error: " . $e->getMessage()]);
+    }
+}
+
+function handleAddBrand($pdo) {
+    $input = json_decode(file_get_contents("php://input"), true);
+    $name = $input['name'] ?? '';
+
+    if (!$name) {
+        echo json_encode(["status" => "error", "data" => "Brand name is required"]);
+        return;
+    }
+
+    try {
+        $stmt = $pdo->prepare("INSERT INTO brands (name) VALUES (?)");
+        $stmt->execute([$name]);
+        echo json_encode(["status" => "success", "data" => ["message" => "Brand added", "brandID" => $pdo->lastInsertId()]]);
+    } catch (PDOException $e) {
+        echo json_encode(["status" => "error", "data" => "Database error: " . $e->getMessage()]);
+    }
+}
+
+function handleUpdateBrand($pdo) {
+    $input = json_decode(file_get_contents("php://input"), true);
+    $brandID = $input['brandID'] ?? null;
+    $name = $input['name'] ?? '';
+
+    if (!$brandID || !$name) {
+        echo json_encode(["status" => "error", "data" => "Brand ID and new name required"]);
+        return;
+    }
+
+    try {
+        $stmt = $pdo->prepare("UPDATE brands SET name = ? WHERE brandID = ?");
+        $stmt->execute([$name, $brandID]);
+        echo json_encode(["status" => "success", "data" => "Brand updated"]);
+    } catch (PDOException $e) {
+        echo json_encode(["status" => "error", "data" => "Database error: " . $e->getMessage()]);
+    }
+}
+
+function handleDeleteBrand($pdo) {
+    $input = json_decode(file_get_contents("php://input"), true);
+    $brandID = $input['brandID'] ?? null;
+
+    if (!$brandID) {
+        echo json_encode(["status" => "error", "data" => "Brand ID required"]);
+        return;
+    }
+
+    try {
+        $stmt = $pdo->prepare("DELETE FROM brands WHERE brandID = ?");
+        $stmt->execute([$brandID]);
+        echo json_encode(["status" => "success", "data" => "Brand deleted"]);
+    } catch (PDOException $e) {
+        echo json_encode(["status" => "error", "data" => "Database error: " . $e->getMessage()]);
+    }
+}
+
 ?>
