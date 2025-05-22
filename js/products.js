@@ -329,6 +329,82 @@ async function handleMainSearch() {
     }
 }
 
+/**
+ * View product details (placeholder function)
+ */
+function viewProduct(productId) 
+{
+    console.log('Viewing product:', productId);
+    window.location.href = `view.php?id=${productId}`;
+}
+/**
+ * Compare product (placeholder function)
+ */
+function compareProduct(productId) {
+    console.log('Comparing product:', productId);
+    // Add to comparison list
+    alert(`Added product ID: ${productId} to comparison`);
+}
+
+/**
+ * Get unique categories from products
+ * 
+ * @param {Array} products - Array of product objects
+ * @returns {Array} - Array of unique categories
+ */
+function getUniqueCategories(products) {
+    const categories = new Set();
+    products.forEach(product => {
+        if (product.category) {
+            categories.add(product.category);
+        }
+    });
+    return Array.from(categories);
+}
+
+/**
+ * Get unique brands from products
+ * 
+ * @param {Array} products - Array of product objects
+ * @returns {Array} - Array of unique brands
+ */
+function getUniqueBrands(products) {
+    const brands = new Set();
+    products.forEach(product => {
+        if (product.brand) {
+            brands.add(product.brand);
+        }
+    });
+    return Array.from(brands);
+}
+
+/**
+ * Populate filter dropdowns
+ * 
+ * @param {Array} products - Array of product objects
+ */
+function populateFilters(products) {
+    // Populate category filter
+    const categoryFilter = document.getElementById('category-filter');
+    const categories = getUniqueCategories(products);
+    
+    categoryFilter.innerHTML = '<option value="">All Categories</option>';
+    categories.forEach(category => {
+        categoryFilter.innerHTML += `<option value="${category}">${category}</option>`;
+    });
+
+    // Populate brand filter
+    const brandFilter = document.getElementById('brand-filter');
+    const brands = getUniqueBrands(products);
+    
+    brandFilter.innerHTML = '<option value="">All Brands</option>';
+    brands.forEach(brand => {
+        brandFilter.innerHTML += `<option value="${brand}">${brand}</option>`;
+    });
+}
+
+
+
 
 /**
  * Fetch product by ID
