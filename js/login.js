@@ -11,9 +11,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         console.log("Login form submitted"); //Debug
 
-        const email = document.getElementById('email').value.trim();
+         const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
-        const errorMsg = document.getElementById('error-msg');
+        const loginMessage = document.getElementById('loginMessage'); 
 
         // Basic validation
         if (!email || !password) {
@@ -30,56 +30,59 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        errorMsg.style.color = "black";
-        errorMsg.textContent = "Logging in...";
+        loginMessage.style.color = "blue";
+        loginMessage.textContent = "Logging in...";
 
-        // Send login request to API
-        fetch('api.php?type=Login', {
+       // Send login request to API - Updated to match your API structure
+        fetch('../php/api.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                email,
-                password
+                type: 'Login', // Added type parameter as required by your API
+                email: email,
+                password: password
             })
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             console.log("API Response:", data); // Debug
-
-            if (data.status === 'success') {
-                // Store data in local storage
-                localStorage.setItem('apiKey', data.user.api_key);
+            
+            if (data.status === 'success') 
+            {
+                // Store data in local storage - Updated to match your API response structure
+                localStorage.setItem('apiKey', data.data.apiKey);
                 localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('type', data.user.type);
-                localStorage.setItem('userName', data.user.name);
-
-                errorMsg.style.color = 'green';
-                errorMsg.textContent = "Login successful. Redirecting...";
-
-                setTimeout(() => {
-                    window.location.href = 'products.php';
+                localStorage.setItem('userId', data.data.userId);
+                localStorage.setItem('userName', data.data.name);
+                
+                loginMessage.style.color = 'green';
+                loginMessage.textContent = data.data.message || "Login successful. Redirecting...";
+                
+                // Redirect to products page after successful login
+                setTimeout(() => 
+                {
+                    window.location.href = '../php/products.php';
                 }, 1500);
                 
-            } else {
-                errorMsg.style.color = 'red';
-
-                if (data.error === 'User not registered') {
-                    errorMsg.textContent = "This email is not registered. Please sign up first.";
-                } else if (data.error) {
-                    errorMsg.textContent = data.error;
-                } else if (data.message) {
-                    errorMsg.textContent = data.message;
-                } else {
-                    errorMsg.textContent = "Login failed. Please check your credentials.";
-                }
+            } 
+            else 
+            {
+                // Handle error response - Updated to match your API error structure
+                loginMessage.style.color = 'red';
+                loginMessage.textContent = data.data || "Login failed. Please check your credentials.";
             }
         })
         .catch(err => {
-            errorMsg.style.color = 'red';
-            errorMsg.textContent = "An error occurred. Please try again.";
-            console.error("Fetch error:", err); //Debug
+            loginMessage.style.color = 'red';
+            loginMessage.textContent = "An error occurred. Please try again.";
+            console.error("Fetch error:", err); // Debug
         });
     });
 });
