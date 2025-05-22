@@ -22,6 +22,10 @@ document.addEventListener('DOMContentLoaded', function()
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirm_password').value;
         const userType = document.getElementById('type').value;
+        const phoneNo = document.getElementById('phoneNo').value;
+        const country = document.getElementById('country').value;
+        const city = document.getElementById('city').value;
+        const street = document.getElementById('street').value;
         
         // Reset error messages
         clearErrors();
@@ -72,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function()
         if (isValid) 
         {
             // If all validation passes, register the user
-            registerUser(name, surname, email, password, userType);
+            registerUser(name, surname, email, password, userType, phoneNo, country, city, street);
         }
     });
     
@@ -152,82 +156,64 @@ document.addEventListener('DOMContentLoaded', function()
     }
 });
 
-function registerUser(name, surname, email, password, userType) 
-{
-    // Show loading state
+// Updated registerUser function with all parameters
+function registerUser(name, surname, email, password, userType, phoneNo, country, city, street) {
     const registerBtn = document.getElementById('register-btn');
     const errorMessage = document.getElementById('error-message');
     registerBtn.disabled = true;
     registerBtn.textContent = 'Registering...';
     
-    // Prepare data for API
-    const formData = new FormData();
-    formData.append('type', 'Register'); // The operation type is "Register"
-    formData.append('name', name);
-    formData.append('surname', surname);
-    formData.append('email', email);
-    formData.append('password', password);
-    formData.append('user_type', userType); // This is for the user type (Customer, Courier, etc.)
-    
-    // For debugging
-    console.log('Sending registration data:', {
+    const requestData = {
         type: 'Register',
         name: name,
         surname: surname,
         email: email,
-        user_type: userType
-    });
+        password: password,
+        user_type: userType,
+        phoneNo: phoneNo || '',     // Provide empty string if not filled
+        country: country || '',     // Provide empty string if not filled
+        city: city || '',          // Provide empty string if not filled
+        street: street || ''       // Provide empty string if not filled
+    };
     
-    // Create and send POST request using fetch
-    fetch('api.php', 
-    {
+    fetch('../php/api.php', {
         method: 'POST',
-        body: formData
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData)
     })
-    .then(response => 
-    {
-        console.log('Response status:', response.status);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+    .then(response => {
+        // First check if response is JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            return response.text().then(text => {
+                throw new Error(text);
+            });
         }
         return response.json();
     })
-    .then(data => 
-    {
-        console.log('API response:', data);
-        
-        if (data.status === 'success') 
-        {
-            // Registration successful
+    .then(data => {
+        if (data.status === 'success') {
             errorMessage.classList.add('success-message');
             errorMessage.textContent = 'Registration successful! Redirecting to login...';
             
-            // Save the API key if needed
-            if (data.data && data.data.apikey) {
-                localStorage.setItem('apiKey', data.data.apikey);
+            if (data.data && data.data.apiKey) {
+                localStorage.setItem('api_key', data.data.apiKey);
             }
             
-            // Redirect to login page after 2 seconds
-            setTimeout(function() {
+            setTimeout(() => {
                 window.location.href = 'login.php';
             }, 2000);
-        } 
-        else if (data.status === 409 || data.status === 'error') {
-            // Email already exists or other error
-            errorMessage.textContent = data.message || 'Registration failed. Please try again.';
-            registerBtn.disabled = false;
-            registerBtn.textContent = 'Register';
-        } 
-        else {
-            // Other errors
-            errorMessage.textContent = data.message || 'Registration failed. Please try again.';
+        } else {
+            errorMessage.textContent = data.data || 'Registration failed. Please try again.';
             registerBtn.disabled = false;
             registerBtn.textContent = 'Register';
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        errorMessage.textContent = 'Email already exists!';
+        errorMessage.textContent = error.message || 'Registration failed. Please try again.';
         registerBtn.disabled = false;
         registerBtn.textContent = 'Register';
     });
