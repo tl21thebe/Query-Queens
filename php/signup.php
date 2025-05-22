@@ -27,6 +27,20 @@
             <span class="error-text" id="email-error"></span>
         </div>
         <div class="form-group">
+            <label for="phoneNo">Phone Number:</label>
+            <input type="text" id="phoneNo" name="phoneNo"> </div>
+        <div class="form-group">
+            <label for="country">Country:</label>
+            <input type="text" id="country" name="country">
+        </div>
+        <div class="form-group">
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city">
+    </div>
+            <div class="form-group">
+            <label for="street">Street:</label>
+            <input type="text" id="street" name="street">
+        <div class="form-group">
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
             <span class="error-text" id="password-error"></span>

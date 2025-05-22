@@ -5,7 +5,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Product Listing</title>
-  <link rel="stylesheet" href="./css/product.css">
+  <link rel="stylesheet" href="../css/product.css">
   <!-- <link rel="stylesheet" href="../css/product.css"> -->
   <!--<script type="module" src="js/getProducts.js"></script> //no need for this-->
 
