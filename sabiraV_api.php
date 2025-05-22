@@ -1,7 +1,20 @@
 <?php
 header("Content-Type: application/json");
+header("Access-Control-Allow-Origin: *"); 
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
 require_once 'config.php';
-session_start();
+
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    exit(0);
+}
 
 $type = $_SERVER['REQUEST_METHOD'] === 'POST'
     ? ($_POST['type'] ?? json_decode(file_get_contents("php://input"), true)['type'] ?? null)
@@ -33,7 +46,6 @@ switch ($type) {
         echo json_encode(["status" => "error", "data" => "Unknown request type"]);
 }
 
-
 function handleRegister($pdo) {
     $input = json_decode(file_get_contents("php://input"), true);
     $name = $input['name'] ?? '';
@@ -46,12 +58,45 @@ function handleRegister($pdo) {
         return;
     }
 
+    
+    $apiKey = bin2hex(random_bytes(16));
+    
     $hashed = password_hash($password, PASSWORD_DEFAULT);
     try {
-        $stmt = $pdo->prepare("INSERT INTO users (password, email, registrationDate, name, surname, phoneNo, country, city, street)
-                               VALUES (?, ?, Now(), ?, ?, '', '', '', '')");
-        $stmt->execute([$name, $surname, $email, $hashed]);
-        echo json_encode(["status" => "success", "data" => "User registered successfully"]);
+        
+        $stmt = $pdo->prepare("INSERT INTO users (
+                                password, 
+                                email, 
+                                registrationDate, 
+                                name, 
+                                surname, 
+                                phoneNo, 
+                                country, 
+                                city, 
+                                street,
+                                apiKey) 
+                              VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?)");
+        
+        $stmt->execute([
+            $hashed,              
+            $email,               
+            $name,                
+            $surname,             
+            '000-000-0000',       
+            'South Africa',       
+            'Pretoria',           
+            'Default Street',     
+            $apiKey               
+        ]);
+        
+        echo json_encode([
+            "status" => "success", 
+            "data" => [
+                "message" => "User registered successfully",
+                "userId" => $pdo->lastInsertId(),
+                "apiKey" => $apiKey
+            ]
+        ]);
     } catch (PDOException $e) {
         echo json_encode(["status" => "error", "data" => "Error: " . $e->getMessage()]);
     }
@@ -67,38 +112,72 @@ function handleLogin($pdo) {
         return;
     }
 
-    $stmt = $pdo->prepare("SELECT userID, name, email, password FROM users WHERE email = ?");
-    $stmt->execute([$email]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    try {
+        $stmt = $pdo->prepare("SELECT userID, name, email, password, apiKey FROM users WHERE email = ?");
+        $stmt->execute([$email]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['user'] = [
-            'id' => $user['userID'],
-            'name' => $user['name'],
-            'email' => $user['email']
-        ];
-        echo json_encode(["status" => "success", "data" => "Login successful"]);
-    } else {
-        echo json_encode(["status" => "error", "data" => "Invalid credentials"]);
+        if ($user && password_verify($password, $user['password'])) {
+            
+            $_SESSION['user'] = [
+                'id' => $user['userID'],
+                'name' => $user['name'],
+                'email' => $user['email']
+            ];
+            
+            
+            $apiKey = $user['apiKey'];
+            if (!$apiKey) {
+                $apiKey = bin2hex(random_bytes(16));
+                $stmt = $pdo->prepare("UPDATE users SET apiKey = ? WHERE userID = ?");
+                $stmt->execute([$apiKey, $user['userID']]);
+            }
+            
+            echo json_encode([
+                "status" => "success", 
+                "data" => [
+                    "message" => "Login successful",
+                    "userId" => $user['userID'],
+                    "name" => $user['name'],
+                    "apiKey" => $apiKey
+                ]
+            ]);
+        } else {
+            echo json_encode(["status" => "error", "data" => "Invalid credentials"]);
+        }
+    } catch (PDOException $e) {
+        echo json_encode(["status" => "error", "data" => "Database error: " . $e->getMessage()]);
     }
 }
 
 function isValidApiKey($pdo, $apikey) {
-    $stmt = $pdo->prepare("SELECT userID FROM users WHERE apiKey = ?");
-    $stmt->execute([$apikey]);
-    return $stmt->fetchColumn() !== false;
+    try {
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE apiKey = ?");
+        $stmt->execute([$apikey]);
+        return $stmt->fetchColumn() > 0;
+    } catch (PDOException $e) {
+        return false;
+    }
 }
 
 function getUserIdFromApiKey($pdo, $apikey) {
-    $stmt = $pdo->prepare("SELECT userID FROM users WHERE apiKey = ?");
-    $stmt->execute([$apikey]);
-    $userId = $stmt->fetchColumn();
-    return $userId !== false ? $userId : null;
+    try {
+        $stmt = $pdo->prepare("SELECT userID FROM users WHERE apiKey = ?");
+        $stmt->execute([$apikey]);
+        return $stmt->fetchColumn();
+    } catch (PDOException $e) {
+        return null;
+    }
 }
 
 function requireValidApiKey($pdo) {
     $headers = getallheaders();
     $apikey = $headers['Authorization'] ?? '';
+    
+    
+    if (strpos($apikey, 'Bearer ') === 0) {
+        $apikey = substr($apikey, 7);
+    }
 
     if (!$apikey || !isValidApiKey($pdo, $apikey)) {
         echo json_encode(["status" => "error", "data" => "Invalid or missing API key"]);
@@ -109,17 +188,24 @@ function requireValidApiKey($pdo) {
 }
 
 function handleGetAllProducts($pdo) {
-    $stmt = $pdo->query("SELECT s.shoeID, s.name, s.price, s.image_url, b.name AS brand, c.type AS category
-                         FROM shoes s
-                         LEFT JOIN brands b ON s.brandID = b.brandID
-                         LEFT JOIN categories c ON s.categoryID = c.categoryID");
+    try {
+        $stmt = $pdo->query("SELECT s.shoeID, s.name, s.price, s.image_url, 
+                              b.name AS brand, c.type AS category
+                              FROM shoes s
+                              LEFT JOIN brands b ON s.brandID = b.brandID
+                              LEFT JOIN categories c ON s.categoryID = c.categoryID
+                              ORDER BY s.name");
 
-    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    echo json_encode(["status" => "success", "data" => $products]);
+        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode(["status" => "success", "data" => $products]);
+    } catch (PDOException $e) {
+        echo json_encode(["status" => "error", "data" => "Database error: " . $e->getMessage()]);
+    }
 }
 
 function handleGetRatedProducts($pdo) {
     try {
+        
         $query = "
             SELECT 
                 s.shoeID,
@@ -132,13 +218,13 @@ function handleGetRatedProducts($pdo) {
                 s.size_range,
                 s.colour,
                 b.name AS brand_name,
-                COUNT(r.reviewID) AS review_count,
-                ROUND(AVG(r.rating), 1) AS avg_rating
+                COUNT(r.reviewID) AS review_count
             FROM shoes s
-            INNER JOIN reviews_rating r ON s.shoeID = r.R_shoesID
-            INNER JOIN brands b ON s.brandID = b.brandID
+            LEFT JOIN reviews_rating r ON s.shoeID = r.R_shoesID
+            LEFT JOIN brands b ON s.brandID = b.brandID
             GROUP BY s.shoeID
             ORDER BY review_count DESC
+            LIMIT 10
         ";
 
         $stmt = $pdo->prepare($query);
@@ -150,5 +236,4 @@ function handleGetRatedProducts($pdo) {
         echo json_encode(["status" => "error", "data" => "Database error: " . $e->getMessage()]);
     }
 }
-
 ?>
