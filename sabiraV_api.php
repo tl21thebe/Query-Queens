@@ -46,6 +46,14 @@ switch ($type) {
         handleaddProduct($pdo);
         break;
 
+    case 'editProduct':
+        handleeditProduct($pdo);
+        break;
+
+    case 'deleteProduct':
+        handledeleteProduct($pdo);
+        break;
+
     default:
         echo json_encode(["status" => "error", "data" => "Unknown request type"]);
 }
@@ -262,4 +270,41 @@ function handleaddProduct($pdo){
 
     echo json_encode(["status" => "success", "data" => "Product added successfully"]);
 }
+
+function handleeditProduct($pdo){
+    $input = json_decode(file_get_contents("php://input"), true);
+    $shoeID = $input['shoeID'] ?? null;
+
+    if (!$shoeID) {
+        echo json_encode(["status" => "error", "data" => "Missing shoe ID"]);
+        return;
+    }
+
+    $name = $input['name'] ?? '';
+    $price = $input['price'] ?? 0;
+    $description = $input['description'] ?? '';
+    $image_url = $input['image_url'] ?? '';
+
+    $stmt = $pdo->prepare("UPDATE shoes SET name = ?, price = ?, description = ?, image_url = ? WHERE shoeID = ?");
+    $stmt->execute([$name, $price, $description, $image_url, $shoeID]);
+
+    echo json_encode(["status" => "success", "data" => "Product updated successfully"]);
+}
+
+function handledeleteProduct($pdo) {
+    $input = json_decode(file_get_contents("php://input"), true);
+    $shoeID = $input['shoeID'] ?? null;
+
+    if (!$shoeID) {
+        echo json_encode(["status" => "error", "data" => "Missing shoe ID"]);
+        return;
+    }
+
+    $stmt = $pdo->prepare("DELETE FROM shoes WHERE shoeID = ?");
+    $stmt->execute([$shoeID]);
+
+    echo json_encode(["status" => "success", "data" => "Product deleted successfully"]);
+
+}
+
 ?>
