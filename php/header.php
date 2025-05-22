@@ -44,7 +44,7 @@ $theme_class = $current_theme === 'dark' ? 'dark-theme' : '';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compare It</title>
-    <link rel="stylesheet" href="<?php echo $base_url; ?>css/style.css">
+    <link rel="stylesheet" href="<?php echo $base_url; ?>../css/style.css">
     <script>
         // Early theme initialization
         (function() 
@@ -76,9 +76,8 @@ $theme_class = $current_theme === 'dark' ? 'dark-theme' : '';
         </div>
 
         <div class="nav-links">
-            <a href="<?php echo $base_url; ?>CompareIt.php">COMPARE IT</a>
+            <a href="<?php echo $base_url; ?>products.php">COMPARE IT</a>
             <a href="<?php echo $base_url; ?>ratedProducts.php">TOP RATED</a>
-            <a href="<?php echo $base_url; ?>deals.php">DEALS</a>
             <a href="<?php echo $base_url; ?>login.php">LOGIN</a>
             <a href="<?php echo $base_url; ?>signup.php">SIGN IN</a>
             <?php if (isLoggedIn()): ?>
@@ -94,6 +93,6 @@ $theme_class = $current_theme === 'dark' ? 'dark-theme' : '';
     </nav>
 </header>
 <!-- Load theme script after DOM is ready -->
-<script src="<?php echo $base_url; ?>js/theme.js"></script>
+<script src="<?php echo $base_url; ?>../js/theme.js"></script>
 
 <main>
