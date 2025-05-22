@@ -422,10 +422,53 @@ function handleDeleteBrand($pdo) {
     }
 }
 
-function handleGetCategories($pdo) {
-    $stmt = $pdo->query("SELECT categoryID, type FROM categories ORDER BY type");
+//changed this function because I changed the categories attribute name from type to catType
+function handleGetCategories($pdo) {    
+    $stmt = $pdo->query("SELECT categoryID, catType FROM categories ORDER BY catType");
     $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
     echo json_encode(["status" => "success", "data" => $categories]);
+}
+
+function handleAddCategory($pdo) {
+    $input = json_decode(file_get_contents("php://input"), true);
+    $catType = trim($input['catType'] ?? '');
+    if (!$catType) {
+        echo json_encode(["status" => "error", "data" => "Category name required"]);
+        return;
+    }
+
+    $stmt = $pdo->prepare("INSERT INTO categories (catType) VALUES (?)");
+    $stmt->execute([$catType]);
+    echo json_encode(["status" => "success", "data" => "Category added"]);
+}
+
+function handleUpdateCategory($pdo) {
+    $input = json_decode(file_get_contents("php://input"), true);
+    $categoryID = $input['categoryID'] ?? null;
+    $catType = trim($input['catType'] ?? '');
+
+    if (!$categoryID || !$catType) {
+        echo json_encode(["status" => "error", "data" => "ID and name required"]);
+        return;
+    }
+
+    $stmt = $pdo->prepare("UPDATE categories SET catType = ? WHERE categoryID = ?");
+    $stmt->execute([$catType, $categoryID]);
+    echo json_encode(["status" => "success", "data" => "Category updated"]);
+}
+
+function handleDeleteCategory($pdo) {
+    $input = json_decode(file_get_contents("php://input"), true);
+    $categoryID = $input['categoryID'] ?? null;
+
+    if (!$categoryID) {
+        echo json_encode(["status" => "error", "data" => "ID required"]);
+        return;
+    }
+
+    $stmt = $pdo->prepare("DELETE FROM categories WHERE categoryID = ?");
+    $stmt->execute([$categoryID]);
+    echo json_encode(["status" => "success", "data" => "Category deleted"]);
 }
 
 function handleGetStores($pdo) {
