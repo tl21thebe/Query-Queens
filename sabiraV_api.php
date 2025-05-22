@@ -102,6 +102,10 @@ case 'deleteStore':
     handleDeleteStore($pdo);
     break;
 
+case 'productDetails':
+    handleproductDetails($pdo);
+    break;
+
 
 
     default:
@@ -518,6 +522,54 @@ function handleDeleteStore($pdo) {
     $stmt = $pdo->prepare("DELETE FROM stores WHERE storeID = ?");
     $stmt->execute([$storeID]);
     echo json_encode(["status" => "success", "data" => "Store deleted"]);
+}
+
+function handleproductDetails($pdo){
+    $stmt = $pdo->prepare("
+        SELECT s.shoeID, s.name, s.price, s.image_url, s.description, s.colour, s.gender, 
+               s.releaseDate, s.material, b.name AS brand, c.catType AS category
+        FROM shoes s
+        LEFT JOIN brands b ON s.brandID = b.brandID
+        LEFT JOIN categories c ON s.categoryID = c.categoryID
+        WHERE s.shoeID = ?
+    ");
+
+    
+    $input = json_decode(file_get_contents("php://input"), true);///extract the shoeID from a POST body
+    $shoeID = $input['shoeID'] ?? ($_GET['shoeID'] ?? null);
+
+    $stmt->execute([$shoeID]);
+    $product = $stmt->fetch(PDO::FETCH_ASSOC);
+
+
+    if (!$product) {
+        echo json_encode(["status" => "error", "data" => "Product not found"]);
+        return;
+    }
+
+    /////i think i need to upload rows in the 'has' table 
+    $storeStmt = $pdo->prepare("
+        SELECT st.name AS store_name, st.email, h.storeID
+        FROM stores st
+        JOIN has h ON h.storeID = st.storeID
+        WHERE h.shoeID = ?
+    ");
+    $storeStmt->execute([$shoeID]);
+    $product['stores'] = $storeStmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $reviewStmt = $pdo->prepare("
+        SELECT r.description, u.name AS reviewer
+        FROM reviews_rating r
+        JOIN users u ON u.userID = r.R_userID
+        WHERE r.R_shoesID = ?
+    ");
+    $reviewStmt->execute([$shoeID]);
+    $product['reviews'] = $reviewStmt->fetchAll(PDO::FETCH_ASSOC);
+
+    echo json_encode([
+        "status" => "success",
+        "data" => $product
+    ]);
 }
 
 
