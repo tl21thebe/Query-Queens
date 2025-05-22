@@ -251,6 +251,84 @@ async function getProductsByCategory(categoryName) {
     }
 }
 
+/**
+ * Search products by name or brand
+ * 
+ * @param {string} searchTerm - Term to search for
+ * @returns {Promise} - Promise that resolves to search results
+ */
+async function searchProducts(searchTerm) {
+    try {
+        const allProducts = await getAllProducts();
+        const searchTermLower = searchTerm.toLowerCase();
+        
+        return allProducts.filter(product => 
+            (product.name && product.name.toLowerCase().includes(searchTermLower)) ||
+            (product.brand && product.brand.toLowerCase().includes(searchTermLower))
+        );
+    } catch (error) {
+        console.error(`Error searching products for "${searchTerm}":`, error);
+        throw error;
+    }
+}
+
+/**
+ * Display products in the UI using the proper card styling
+ * 
+ * @param {Array} products - Array of product objects
+ */
+function displayProducts(products) {
+    const productsHolder = document.querySelector('.products-holder');
+    
+    if (!products || products.length === 0) {
+        productsHolder.innerHTML = '<p>No products found.</p>';
+        return;
+    }
+
+    const productsHTML = products.map(product => `
+        <div class="product-card" data-product-id="${product.shoeID}">
+            <div class="product-image">
+                ${product.image_url ? 
+                    `<img src="${product.image_url}" alt="${product.name}" onerror="this.src='/api/placeholder/300/180'">` : 
+                    `<div class="no-image">No Image Available</div>`
+                }
+            </div>
+            <div class="product-info">
+                <div class="product-title">${product.name}</div>
+                <div class="product-brand"><strong>Brand:</strong> ${product.brand || 'Unknown Brand'}</div>
+                <div class="product-category"><strong>Category:</strong> ${product.category || 'Uncategorized'}</div>
+                <div class="price-container">
+                    <span class="price">R${parseFloat(product.price || 0).toFixed(2)}</span>
+                </div>
+            </div>
+            <div class="product-actions">
+                <button onclick="viewProduct(${product.shoeID})" class="view-btn">View Details</button>
+                <button onclick="compareProduct(${product.shoeID})" class="compare-btn">Compare</button>
+            </div>
+        </div>
+    `).join('');
+
+    productsHolder.innerHTML = `<div class="product-list">${productsHTML}</div>`;
+}
+
+/**
+ * Handle main search from the slogan section
+ */
+async function handleMainSearch() {
+    const searchTerm = document.getElementById('main-search').value;
+    if (searchTerm.trim()) {
+        // Scroll to products section
+        const productsSection = document.querySelector('.page-header');
+        productsSection.scrollIntoView({ behavior: 'smooth' });
+        
+        // Set the search term in the filter search bar
+        document.getElementById('search-bar').value = searchTerm;
+        
+        // Apply the search
+        await applyFilters();
+    }
+}
+
 
 /**
  * Fetch product by ID
