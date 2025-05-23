@@ -14,10 +14,10 @@
     <h2>Top Rated Products</h2>
     <div class="products-grid">
 
-        <main>
-            <h1>Top Rated Products</h1>
+        
+            
             <div id="rated-products" class="products-container"></div>
-        </main>>
+        
         <!-- more products will be added here dynamically -->
     </div>
 </div>

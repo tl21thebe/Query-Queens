@@ -1,14 +1,21 @@
 document.addEventListener("DOMContentLoaded", () => {
-    fetch('')
+    fetch('http://localhost/test/sabiraV_api.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'type=GetRatedProducts'
+        })
         .then(response => response.json())
-        .then(products => {
+        .then(result => {
             const container = document.getElementById('rated-products');
-            if (!products.length) {
+
+            if (result.status !== "success" || !result.data.length) {
                 container.innerHTML = "<p>No rated products found.</p>";
                 return;
             }
 
-            products.forEach(product => {
+            result.data.forEach(product => {
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 card.innerHTML = `
@@ -26,5 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 container.appendChild(card);
             });
         })
-        .catch(err => console.error('Failed to fetch rated products:', err));
+        .catch(err => 
+            console.error('Failed to fetch rated products:', err));
 });
