@@ -1,28 +1,30 @@
 document.addEventListener("DOMContentLoaded", () => {
     const actionContainer = document.getElementById("form-container");
 
-    document.getElementById("add-btn").addEventListener("click", () => {
-        renderForm("add");
+    document.getElementById("add-btn").addEventListener("click", () => {//this part of add product works
+        renderForm("addProduct");
     });
 
-    document.getElementById("edit-btn").addEventListener("click", () => {
+    document.getElementById("edit-btn").addEventListener("click", () => {//on to this
         renderForm("edit");
     });
 
-    document.getElementById("delete-btn").addEventListener("click", () => {
+    document.getElementById("delete-btn").addEventListener("click", () => {//ohh and this
         renderForm("delete");
     });
 
     function renderForm(action) {
-        let formHtml = `<form id="shoe-form"><h2>${action.toUpperCase()} Shoe</h2>`;
-        
-        // Always needed for edit and delete
-        formHtml += `
-            <label for="shoeID">Shoe ID${action !== "add" ? " *" : ""}</label>
-            <input type="number" name="shoeID" id="shoeID" ${action !== "add" ? "required" : ""}>
-        `;
 
-        // Add/Edit fields (not required for edit)
+        const actionTitle = action === "addProduct" ? "ADD" : action.toUpperCase();
+        let formHtml = `<form id="shoe-form"><h2>${actionTitle} Shoe</h2>`;
+        
+        if (action !== "addProduct") {
+            formHtml += `
+                <label for="shoeID">Shoe ID *</label>
+                <input type="number" name="shoeID" id="shoeID" required>
+            `;
+         }
+
         if (action !== "delete") {
             const required = action === "add" ? "required" : "";
 
@@ -93,18 +95,31 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        payload["action"] = action;
-
-        fetch("api.php", {
+        payload["type"] = action;
+        console.log("here the request " , JSON.stringify(payload));
+        fetch("../php/sabiraV_api.php", {//this can be changed for testing
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(payload)
+            
         })
         .then(res => res.json())
-        .then(data => alert(data.message || "Success"))
-        .catch(err => alert("Error: " + err.message));
+        .then(data => {
+            console.log("Full API response:", data);
+
+            if (data.status === "success") {
+                alert(data.data);
+            } else {
+                alert("API Error: " + data.data);
+            }
+        })
+        .catch(err => {
+            console.error("request error maybe", err);
+            alert("Request failed: " + err.message);
+        });
+
     }
 
     function sanitize(input) {
