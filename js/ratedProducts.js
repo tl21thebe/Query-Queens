@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <img src="${product.image_url}" alt="${product.name}">
                     <h3>${product.name}</h3>
                     <p><strong>Brand:</strong> ${product.brand_name}</p>
-                    <p><strong>Price:</strong> $${product.price}</p>
+                    <p><strong>Price:</strong> R${product.price}</p>
                     <p><strong>Material:</strong> ${product.material}</p>
                     <p><strong>Color:</strong> ${product.colour}</p>
                     <p><strong>Size Range:</strong> ${product.size_range}</p>
