@@ -6,11 +6,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     document.getElementById("edit-btn").addEventListener("click", () => {//on to this
-        renderForm("edit");
+        renderForm("editProduct");
     });
 
     document.getElementById("delete-btn").addEventListener("click", () => {//ohh and this
-        renderForm("delete");
+        renderForm("deleteProduct");
     });
 
     function renderForm(action) {
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
          }
 
-        if (action !== "delete") {
+        if (action !== "deleteProduct") {
             const required = action === "add" ? "required" : "";
 
             formHtml += `
