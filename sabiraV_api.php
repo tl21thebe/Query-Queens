@@ -578,7 +578,7 @@ function handleproductDetails($pdo){
     ]);
 }
 
-function handleAddReview($pdo) {
+/*function handleAddReview($pdo) {
     session_start();
     $input = json_decode(file_get_contents("php://input"), true);
 
@@ -601,6 +601,39 @@ function handleAddReview($pdo) {
     $stmt->execute([$description, $userID, $shoeID]);
 
     echo json_encode(["status" => "success", "data" => "Review added"]);
+}*/
+function handleAddReview($pdo) {
+    //here is my addreviews endpoint
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    $input = json_decode(file_get_contents("php://input"), true);
+
+    $shoeID = $input['shoeID'] ?? null;
+    $description = trim($input['description'] ?? '');
+    $rating = $input['rating'] ?? null;
+
+    if (!$shoeID || !$description || !$rating) {
+        echo json_encode(["status" => "error", "data" => "Missing review data"]);
+        return;
+    }
+
+    if (!isset($_SESSION['user']['id'])) {
+        echo json_encode(["status" => "error", "data" => "User not logged in"]);
+        return;
+    }
+
+    $userID = $_SESSION['user']['id'];
+
+    try {
+        $stmt = $pdo->prepare("INSERT INTO reviews_rating (description, rating, R_userID, R_shoesID) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$description, $rating, $userID, $shoeID]);
+
+        echo json_encode(["status" => "success", "data" => "Review added"]);
+    } catch (PDOException $e) {
+        echo json_encode(["status" => "error", "data" => "Database error: " . $e->getMessage()]);
+    }
 }
 
 function handleGetSingleProduct($pdo) {
