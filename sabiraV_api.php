@@ -124,6 +124,12 @@ function handleRegister($pdo) {
     $surname = $input['surname'] ?? '';
     $email = $input['email'] ?? '';
     $password = $input['password'] ?? '';
+    $phonenum=$input['phoneNo'] ?? '';
+    $country=$input['country']??'';
+    $city=$input['city']??'';
+    $street=$input['street']??'';
+    $userType=$input['user_type']?? 'Customer';
+
 
     if (!$name || !$surname || !$email || !$password) {
         echo json_encode(["status" => "error", "data" => "All fields are required."]);
@@ -146,18 +152,20 @@ function handleRegister($pdo) {
                                 country, 
                                 city, 
                                 street,
+                                user_type,
                                 apiKey) 
-                              VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?)");
+                              VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?,?)");
         
         $stmt->execute([
             $hashed,              
             $email,               
             $name,                
             $surname,             
-            '000-000-0000',       
-            'South Africa',       
-            'Pretoria',           
-            'Default Street',     
+            $phonenum,       
+            $country,       
+            $city,           
+            $street, 
+            $userType,    
             $apiKey               
         ]);
         
