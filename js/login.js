@@ -69,10 +69,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 loginMessage.textContent = data.data.message || "Login successful. Redirecting...";
                 
                 // Redirect to products page after successful login
-                setTimeout(() => 
-                {
+                setTimeout(() => {
+                const userType = data.data.user_type;
+                if (userType === 'Admin') {
+                    window.location.href = '../php/admin.php';
+                } else {
                     window.location.href = '../php/products.php';
-                }, 1500);
+                }
+            }, 1500);
                 
             } 
             else 
