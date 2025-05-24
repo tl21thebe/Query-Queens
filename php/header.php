@@ -77,7 +77,7 @@ $theme_class = $current_theme === 'dark' ? 'dark-theme' : '';
 
         <div class="nav-links">
             <a href="<?php echo $base_url; ?>products.php">COMPARE IT</a>
-            <a href="<?php echo $base_url; ?>ratedProducts.php">TOP RATED</a>
+            <a href="<?php echo $base_url; ?>ratedProducts.php">TOP RATED⭐</a>
             <a href="<?php echo $base_url; ?>login.php">LOGIN</a>
             <a href="<?php echo $base_url; ?>signup.php">SIGN IN</a>
             <?php if (isLoggedIn()): ?>

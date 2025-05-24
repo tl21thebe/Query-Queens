@@ -1,31 +1,41 @@
 document.addEventListener("DOMContentLoaded", () => {
     const actionContainer = document.getElementById("form-container");
 
-    document.getElementById("add-btn").addEventListener("click", () => {//this part of add product works
-        renderForm("addProduct");
+    document.getElementById("add-btn").addEventListener("click", () => {
+        renderForm("add");
     });
 
-    document.getElementById("edit-btn").addEventListener("click", () => {//on to this
-        renderForm("editProduct");
+    document.getElementById("edit-btn").addEventListener("click", () => {
+        renderForm("edit");
     });
 
-    document.getElementById("delete-btn").addEventListener("click", () => {//ohh and this
-        renderForm("deleteProduct");
+    document.getElementById("delete-btn").addEventListener("click", () => {
+        renderForm("delete");
     });
 
     function renderForm(action) {
+        const actionTitleMap = {
+            add: "Add Shoe",
+            edit: "Edit Shoe",
+            delete: "Delete Shoe"
+        };
 
-        const actionTitle = action === "addProduct" ? "ADD" : action.toUpperCase();
-        let formHtml = `<form id="shoe-form"><h2>${actionTitle} Shoe</h2>`;
-        
-        if (action !== "addProduct") {
+        const buttonLabelMap = {
+            add: "Add",
+            edit: "Update",
+            delete: "Delete"
+        };
+
+        let formHtml = `<form id="shoe-form"><h2>${actionTitleMap[action]}</h2>`;
+
+        if (action !== "add") {
             formHtml += `
                 <label for="shoeID">Shoe ID *</label>
                 <input type="number" name="shoeID" id="shoeID" required>
             `;
-         }
+        }
 
-        if (action !== "deleteProduct") {
+        if (action !== "delete") {
             const required = action === "add" ? "required" : "";
 
             formHtml += `
@@ -73,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         formHtml += `
-            <button type="submit">${action.toUpperCase()}</button>
+            <button type="submit">${buttonLabelMap[action]}</button>
         </form>`;
 
         actionContainer.innerHTML = formHtml;
@@ -88,26 +98,25 @@ document.addEventListener("DOMContentLoaded", () => {
         const formData = new FormData(document.getElementById("shoe-form"));
         const payload = {};
 
-        // Sanitize & build payload
         for (let [key, value] of formData.entries()) {
             if (value.trim() !== "") {
                 payload[key] = sanitize(value);
             }
         }
 
-        payload["type"] = action;
-        console.log("here the request " , JSON.stringify(payload));
-        fetch("../php/sabiraV_api.php", {//this can be changed for testing
+        payload["type"] = action + "Product"; 
+        console.log("Request payload:", JSON.stringify(payload));
+
+        fetch("../php/sabiraV_api.php", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(payload)
-            
         })
         .then(res => res.json())
         .then(data => {
-            console.log("Full API response:", data);
+            console.log("API response:", data);
 
             if (data.status === "success") {
                 alert(data.data);
@@ -116,14 +125,12 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         })
         .catch(err => {
-            console.error("request error maybe", err);
+            console.error("Request failed:", err);
             alert("Request failed: " + err.message);
         });
-
     }
 
     function sanitize(input) {
-        // Basic front-end SQL injection prevention
         return input.replace(/['";]/g, "").trim();
     }
 });

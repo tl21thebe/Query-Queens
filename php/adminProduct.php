@@ -1,14 +1,14 @@
+<?php include('header.php'); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Add New Shoe</title>
-  <link rel="stylesheet" href="../css/admin.css">
+  <title>Admin Shoes</title>
+  <link rel="stylesheet" href="../css/adminProduct.css">
 </head>
 <body>
 
   <h1>Edit the shoes table</h1>
-
 
     <div class="controls">
         <button id="add-btn">Add Shoe</button>
@@ -18,7 +18,7 @@
 
     <div id="form-container"></div>
 
-    <script src="../js/admin.js"></script>
+    <script src="../js/adminProduct.js"></script>
 
 </body>
 </html>
