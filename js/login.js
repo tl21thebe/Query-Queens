@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     const loginForm = document.getElementById('login-form');
+    const errorMsg = document.getElementById('error-msg');
+    const loginMessage = document.getElementById('loginMessage');
 
     if (!loginForm) {
         console.error("Login form not found!");
@@ -11,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         console.log("Login form submitted"); //Debug
 
-         const email = document.getElementById('email').value.trim();
+        const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
         const loginMessage = document.getElementById('loginMessage'); 
 
@@ -34,11 +36,12 @@ document.addEventListener("DOMContentLoaded", function () {
         loginMessage.textContent = "Logging in...";
 
        // Send login request to API - Updated to match your API structure
-        fetch('../php/api.php', {
+        fetch("../php/api.php", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
+            // credentials: 'include',
             body: JSON.stringify({
                 type: 'Login', // Added type parameter as required by your API
                 email: email,

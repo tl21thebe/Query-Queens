@@ -26,6 +26,7 @@
                     <button type="submit" class="btn">Login</button>
                 </div>
                 <p id="error-msg" class="error-message"></p>
+                <p id="loginMessage" class="info-message"></p>
                 <p>New to CompareIt? <a href="signup.php">Signup here!</a></p>
             </form>
         </div>
