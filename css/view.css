@@ -203,3 +203,53 @@ h3 {
         width: 100%;
     }
 }
+
+
+
+/*css features for adding a review */
+.review-form {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #444;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.form-input:focus {
+    border-color: #e63946;
+    outline: none;
+}
+
+.submit-review-btn {
+    background-color: #1d3557;
+    color: white;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 5px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-review-btn:hover {
+    background-color: #457b9d;
+}
