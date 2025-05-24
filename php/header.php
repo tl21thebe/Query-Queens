@@ -15,13 +15,18 @@ if (!function_exists('isLoggedIn'))
 
 // Get user name for display
 $user_name = '';
-if (isLoggedIn() && isset($_SESSION['user']['name'])) 
-{
-    $user_name = $_SESSION['user']['name'];
-} 
-elseif (isLoggedIn() && isset($_SESSION['user']['email'])) 
-{
-    $user_name = $_SESSION['user']['email'];
+$user_type = '';
+
+if (isLoggedIn()) {
+    if (isset($_SESSION['user']['name'])) {
+        $user_name = $_SESSION['user']['name'];
+    } elseif (isset($_SESSION['user']['email'])) {
+        $user_name = $_SESSION['user']['email'];
+    }
+
+    if (isset($_SESSION['user']['user_type'])) {
+        $user_type = $_SESSION['user']['user_type'];
+    }
 }
 
 // Get the base URL for the site
@@ -78,7 +83,13 @@ $theme_class = $current_theme === 'dark' ? 'dark-theme' : '';
         <div class="nav-links">
             <a href="<?php echo $base_url; ?>products.php">COMPARE IT</a>
             <a href="<?php echo $base_url; ?>ratedProducts.php">TOP RATED⭐</a>
-            
+
+            <?php if ($user_type === 'Admin'): ?>
+                <a href="<?php echo $base_url; ?>adminProduct.php">Manage Products</a>
+                <a href="<?php echo $base_url; ?>adminCategory.php">Manage Categories</a>
+                <a href="<?php echo $base_url; ?>adminBrands.php">Manage Brands</a>
+            <?php endif; ?>
+
             <?php if (isLoggedIn()): ?>
                 <div class="user-info">
                     <span><?php echo htmlspecialchars($user_name); ?></span>

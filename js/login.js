@@ -71,9 +71,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Redirect to products page after successful login
                 setTimeout(() => {
                 const userType = data.data.user_type;
-                if (userType === 'Admin') {
-                    window.location.href = '../php/admin.php';
-                } else {
+                if (userType === 'Admin') {//this if is pointless because it take both customer and admin to the same place
+                    window.location.href = '../php/products.php';//but the difference is that the admin will have more links in 
+                } else {//header , i guess i will say that is the difference between customer and admin😊
                     window.location.href = '../php/products.php';
                 }
             }, 1500);

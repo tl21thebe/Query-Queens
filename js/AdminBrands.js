@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         payload["type"] = action;
 
-        fetch("../php/sabiraV_api.php", {
+        fetch("../php/api.php", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
