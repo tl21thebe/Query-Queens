@@ -193,7 +193,7 @@ function handleLogin($pdo) {
     }
 
     try {
-        $stmt = $pdo->prepare("SELECT userID, name, email, password, apiKey FROM users WHERE email = ?");
+        $stmt = $pdo->prepare("SELECT userID, name, email, password, apiKey,user_type FROM users WHERE email = ?");
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -202,7 +202,8 @@ function handleLogin($pdo) {
             $_SESSION['user'] = [
                 'id' => $user['userID'],
                 'name' => $user['name'],
-                'email' => $user['email']
+                'email' => $user['email'],
+                'user_type'=>$user['user_type']
             ];
             
             
@@ -219,7 +220,8 @@ function handleLogin($pdo) {
                     "message" => "Login successful",
                     "userId" => $user['userID'],
                     "name" => $user['name'],
-                    "apiKey" => $apiKey
+                    "apiKey" => $apiKey,
+                    "user_type"=>$user['user_type']
                 ]
             ]);
         } else {
