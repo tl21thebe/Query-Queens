@@ -87,13 +87,9 @@
         <!-- Reviews Analytics Section -->
         <div class="reviews-section">
             <h2>📊 Review Analytics</h2>
-            <div class="reviews-analytics">
-                <div class="rating-breakdown">
-                    <h4>Rating Distribution</h4>
-                    <canvas id="ratingChart"></canvas>
-                </div>
-                <div class="review-stats">
-                    <h4>Review Statistics</h4>
+            <div class="review-stats-single">
+                <h4>Review Statistics</h4>
+                <div class="stats-grid">
                     <div class="stat-item">
                         <span class="stat-label">Most Reviewed Product:</span>
                         <span id="most-reviewed" class="stat-value">Loading...</span>
@@ -105,6 +101,18 @@
                     <div class="stat-item">
                         <span class="stat-label">Most Popular Category:</span>
                         <span id="popular-category" class="stat-value">Loading...</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Total User Reviews:</span>
+                        <span id="total-user-reviews" class="stat-value">Loading...</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Average Product Rating:</span>
+                        <span id="avg-product-rating" class="stat-value">Loading...</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Most Active Reviewer:</span>
+                        <span id="top-reviewer" class="stat-value">Loading...</span>
                     </div>
                 </div>
             </div>
