@@ -648,6 +648,98 @@ function handleAddReview($pdo) {
 
 function handleGetSingleProduct($pdo) {
     $input = json_decode(file_get_contents("php://input"), true);
+    $shoeID = $input['shoeID'] ?? ($_GET['shoeID'] ?? null);
+
+    if (!$shoeID) {
+        echo json_encode(["status" => "error", "data" => "Shoe ID required"]);
+        return;
+    }
+
+    try {
+        //get the product info
+        $stmt = $pdo->prepare("
+            SELECT 
+                s.shoeID, 
+                s.name, 
+                s.price, 
+                s.description, 
+                s.material, 
+                s.gender, 
+                s.image_url, 
+                s.size_range, 
+                s.colour, 
+                s.releaseDate,
+                b.name AS brand_name,
+                c.catType AS category_name
+            FROM shoes s
+            LEFT JOIN brands b ON s.brandID = b.brandID
+            LEFT JOIN categories c ON s.categoryID = c.categoryID
+            WHERE s.shoeID = ?
+        ");
+        $stmt->execute([$shoeID]);
+        $product = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$product) {
+            echo json_encode(["status" => "error", "data" => "Product not found"]);
+            return;
+        }
+
+        //get the stors from the database
+        $storeStmt = $pdo->prepare("
+            SELECT 
+                s.name AS store_name, 
+                s.email AS store_email, 
+                i.price AS store_price
+            FROM store_inventory i
+            JOIN stores s ON s.storeID = i.storeID
+            WHERE i.shoeID = ?
+        ");
+        $storeStmt->execute([$shoeID]);
+        $product['stores'] = $storeStmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // get the reviews from the database
+        $reviewStmt = $pdo->prepare("
+            SELECT 
+                r.reviewID,
+                r.rating,
+                r.description as review_text,
+                u.name as reviewer_name
+            FROM reviews_rating r
+            LEFT JOIN users u ON r.R_userID = u.userID
+            WHERE r.R_shoesID = ?
+            ORDER BY r.reviewID DESC
+            LIMIT 10
+        ");
+        $reviewStmt->execute([$shoeID]);
+        $reviews = $reviewStmt->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($reviews as &$review) {
+            $review['review_date'] = date('Y-m-d'); //Placeholder for now
+        }
+
+//select for the reviewa
+        $avgRatingStmt = $pdo->prepare("
+            SELECT AVG(rating) as avg_rating, COUNT(*) as review_count
+            FROM reviews_rating
+            WHERE R_shoesID = ?
+        ");
+        $avgRatingStmt->execute([$shoeID]);
+        $ratingData = $avgRatingStmt->fetch(PDO::FETCH_ASSOC);
+
+        $product['reviews'] = $reviews;
+        $product['avg_rating'] = round($ratingData['avg_rating'] ?? 0, 1);
+        $product['review_count'] = $ratingData['review_count'] ?? 0;
+
+        echo json_encode(["status" => "success", "data" => $product]);
+
+    } catch (PDOException $e) {
+        echo json_encode(["status" => "error", "data" => "Database error: " . $e->getMessage()]);
+    }
+}
+
+
+/*function handleGetSingleProduct($pdo) {
+    $input = json_decode(file_get_contents("php://input"), true);
     $shoeID = $input['shoeID'] ?? $_GET['shoeID'] ?? null;
 
     if (!$shoeID) {
@@ -745,7 +837,7 @@ function handleGetSingleProduct($pdo) {
     } catch (PDOException $e) {
         echo json_encode(["status" => "error", "data" => "Database error: " . $e->getMessage()]);
     }
-}
+}*/
 
 
 
