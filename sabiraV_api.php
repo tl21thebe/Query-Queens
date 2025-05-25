@@ -1073,7 +1073,9 @@ function handleGetChartData($pdo) {
 }
 
 function handleSavePref($pdo){
-    session_start();
+     if (session_status() === PHP_SESSION_NONE) {
+    session_start(); //This is session managenment for task2:Only starts if not already active
+}
     header("Content-Type: application/json");
 
     if (!isset($_SESSION['user']['id'])) {
