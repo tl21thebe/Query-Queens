@@ -137,6 +137,10 @@ case 'savePreferences':
     handleSavePref($pdo);
     break;
 
+case 'getPreferences':
+    handleGetPreferences($pdo);
+    break;
+
     default:
         echo json_encode(["status" => "error", "data" => "Unknown request type"]);
 }
@@ -1139,7 +1143,45 @@ function handleSavePref($pdo){
 }
 
 
+function handleGetPreferences($pdo){
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
 
+    if (!isset($_SESSION['user']['id'])) {
+        echo json_encode(["status" => "error", "data" => "User not logged in"]);
+        return;
+    }
+
+    $userID = $_SESSION['user']['id'];
+
+    $stmt = $pdo->prepare("SELECT * FROM user_preferences WHERE userpref_UserID = ?");
+    $stmt->execute([$userID]);
+    $prefs = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$prefs) {
+        echo json_encode(["status" => "success", "data" => null]); // No prefs yet
+        return;
+    }
+
+    $prefId = $prefs['userpref_ID'];
+
+    //get the associated brand/category/store prefs
+    $brands = $pdo->prepare("SELECT Upref_brands FROM userpref_brands WHERE userPrefID = ?");
+    $brands->execute([$prefId]);
+    $prefs['brands'] = $brands->fetchAll(PDO::FETCH_COLUMN);
+
+    $cats = $pdo->prepare("SELECT Upref_categ FROM userpref_cat WHERE userPrefID = ?");
+    $cats->execute([$prefId]);
+    $prefs['categories'] = $cats->fetchAll(PDO::FETCH_COLUMN);
+
+    $stores = $pdo->prepare("SELECT Upref_stores FROM userpref_stores WHERE userPrefID = ?");
+    $stores->execute([$prefId]);
+    $prefs['stores'] = $stores->fetchAll(PDO::FETCH_COLUMN);
+
+    echo json_encode(["status" => "success", "data" => $prefs]);
+
+}
 
 
 ?>
