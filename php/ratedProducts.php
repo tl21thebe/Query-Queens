@@ -12,12 +12,8 @@
 
 <div class="products-container">
     <h2>Top Rated Products</h2>
-    <div class="products-grid">
-
-        
-            
-            <div id="rated-products" class="products-container"></div>
-        
+    <div class="products-grid">      
+       <div id="rated-products" class="products-container"></div>
         <!-- more products will be added here dynamically -->
     </div>
 </div>
