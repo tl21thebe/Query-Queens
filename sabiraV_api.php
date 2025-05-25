@@ -132,6 +132,10 @@ case 'addReviews':
 
 // ==================================
 
+//here is my endpoint for user_preference
+case 'savePreferences':
+    handleSavePref($pdo);
+    break;
 
     default:
         echo json_encode(["status" => "error", "data" => "Unknown request type"]);
@@ -1068,107 +1072,66 @@ function handleGetChartData($pdo) {
     }
 }
 
+function handleSavePref($pdo){
+    session_start();
+    header("Content-Type: application/json");
 
-/*function handleGetSingleProduct($pdo) {
-    $input = json_decode(file_get_contents("php://input"), true);
-    $shoeID = $input['shoeID'] ?? $_GET['shoeID'] ?? null;
-
-    if (!$shoeID) {
-        echo json_encode(["status" => "error", "data" => "Shoe ID required"]);
+    if (!isset($_SESSION['user']['id'])) {
+        echo json_encode(["status" => "error", "data" => "User not logged in"]);
         return;
     }
 
     try {
-        // Get the main product information
+        $input = json_decode(file_get_contents("php://input"), true);
+        $userID = $_SESSION['user']['id'];
+
+        $minPrice = $input['min_price'] ?? null;
+        $maxPrice = $input['max_price'] ?? null;
+        $onlyAvailable = isset($input['only_available']) ? 1 : 0;
+        $brands = $input['brands'] ?? [];
+        $categories = $input['categories'] ?? [];
+        $stores = $input['stores'] ?? [];
+
         $stmt = $pdo->prepare("
-            SELECT 
-                s.shoeID, 
-                s.name, 
-                s.price, 
-                s.description, 
-                s.material, 
-                s.gender, 
-                s.image_url, 
-                s.size_range, 
-                s.colour, 
-                s.releaseDate,
-                b.name AS brand_name,
-                c.catType AS category_name
-            FROM shoes s
-            LEFT JOIN brands b ON s.brandID = b.brandID
-            LEFT JOIN categories c ON s.categoryID = c.categoryID
-            WHERE s.shoeID = ?
+            INSERT INTO user_preferences (userpref_UserID, min_price, max_price, only_available)
+            VALUES (?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE min_price = ?, max_price = ?, only_available = ?
         ");
-        
-        $stmt->execute([$shoeID]);
-        $product = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->execute([
+            $userID, $minPrice, $maxPrice, $onlyAvailable,
+            $minPrice, $maxPrice, $onlyAvailable
+        ]);
 
-        if (!$product) {
-            echo json_encode(["status" => "error", "data" => "Product not found"]);
-            return;
+        $prefId = $pdo->lastInsertId();
+        if ($prefId == 0) {
+            $stmt = $pdo->prepare("SELECT userpref_ID FROM user_preferences WHERE userpref_UserID = ?");
+            $stmt->execute([$userID]);
+            $prefId = $stmt->fetchColumn();
         }
 
-        // Get store information for this product
-        // Based on your store table structure, we need to get stores that sell this shoe
-        $storeStmt = $pdo->prepare("
-            SELECT 
-                st.storeID,
-                st.name as store_name,
-                st.email as store_email,
-                s.price as store_price
-            FROM stores st
-            CROSS JOIN shoes s
-            WHERE s.shoeID = ?
-            ORDER BY s.price ASC
-        ");
-        
-        $storeStmt->execute([$shoeID]);
-        $stores = $storeStmt->fetchAll(PDO::FETCH_ASSOC);
+        $pdo->prepare("DELETE FROM userpref_brands WHERE userPrefID = ?")->execute([$prefId]);
+        $pdo->prepare("DELETE FROM userpref_cat WHERE userPrefID = ?")->execute([$prefId]);
+        $pdo->prepare("DELETE FROM userpref_stores WHERE userPrefID = ?")->execute([$prefId]);
 
-        // Get reviews for this product - Using correct column names
-        // Try R_shoesID first (if this fails, change to productID)
-        $reviewStmt = $pdo->prepare("
-            SELECT 
-                r.reviewID,
-                r.rating,
-                r.description as review_text,
-                u.name as reviewer_name
-            FROM reviews_rating r
-            LEFT JOIN users u ON r.R_userID = u.userID
-            WHERE r.R_shoesID = ?
-            ORDER BY r.reviewID DESC
-            LIMIT 10
-        ");
-        
-        $reviewStmt->execute([$shoeID]);
-        $reviews = $reviewStmt->fetchAll(PDO::FETCH_ASSOC);
-
-        // Add review_date since it doesn't exist in the table
-        foreach ($reviews as &$review) {
-            $review['review_date'] = date('Y-m-d'); // Default to today's date
+        foreach ($brands as $brand) {
+            $pdo->prepare("INSERT INTO userpref_brands (userPrefID, Upref_brands) VALUES (?, ?)")->execute([$prefId, $brand]);
         }
 
-        // Calculate average rating using R_shoesID
-        $avgRatingStmt = $pdo->prepare("
-            SELECT AVG(rating) as avg_rating, COUNT(*) as review_count
-            FROM reviews_rating
-            WHERE R_shoesID = ?
-        ");
-        
-        $avgRatingStmt->execute([$shoeID]);
-        $ratingData = $avgRatingStmt->fetch(PDO::FETCH_ASSOC);
+        foreach ($categories as $catId) {
+            $pdo->prepare("INSERT INTO userpref_cat (userPrefID, Upref_categ) VALUES (?, ?)")->execute([$prefId, $catId]);
+        }
 
-        $product['stores'] = $stores;
-        $product['reviews'] = $reviews;
-        $product['avg_rating'] = round($ratingData['avg_rating'] ?? 0, 1);
-        $product['review_count'] = $ratingData['review_count'] ?? 0;
+        foreach ($stores as $storeId) {
+            $pdo->prepare("INSERT INTO userpref_stores (userPrefID, Upref_stores) VALUES (?, ?)")->execute([$prefId, $storeId]);
+        }
 
-        echo json_encode(["status" => "success", "data" => $product]);
-        
-    } catch (PDOException $e) {
-        echo json_encode(["status" => "error", "data" => "Database error: " . $e->getMessage()]);
+        echo json_encode(["status" => "success", "data" => "Preferences saved"]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(["status" => "error", "data" => "Server error: " . $e->getMessage()]);
     }
-}*/
+}
+
 
 
 
