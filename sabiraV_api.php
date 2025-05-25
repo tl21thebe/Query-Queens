@@ -314,23 +314,24 @@ function handleGetAllProducts($pdo) {
 
 function handleGetRatedProducts($pdo) {
     try {
-        
         $query = "
             SELECT 
                 s.shoeID,
                 s.name,
                 s.price,
-                s.description,
                 s.material,
                 s.gender,
                 s.image_url,
                 s.size_range,
                 s.colour,
                 b.name AS brand_name,
+                r.description,
+                ROUND(AVG(r.rating), 1) AS avg_rating,
                 COUNT(r.reviewID) AS review_count
             FROM shoes s
-            LEFT JOIN reviews_rating r ON s.shoeID = r.R_shoesID
+            JOIN reviews_rating r ON s.shoeID = r.R_shoesID
             LEFT JOIN brands b ON s.brandID = b.brandID
+            WHERE r.rating IS NOT NULL
             GROUP BY s.shoeID
             ORDER BY review_count DESC
             LIMIT 10
@@ -339,7 +340,7 @@ function handleGetRatedProducts($pdo) {
         $stmt = $pdo->prepare($query);
         $stmt->execute();
         $ratedProducts = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+
         echo json_encode(["status" => "success", "data" => $ratedProducts]);
     } catch (PDOException $e) {
         echo json_encode(["status" => "error", "data" => "Database error: " . $e->getMessage()]);
