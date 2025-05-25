@@ -351,6 +351,10 @@ function handleaddProduct($pdo){
     $categoryID = $input['categoryID'] ?? null;
     $image_url = $input['image_url'] ?? '';
     $description = $input['description'] ?? '';
+    $releaseDate = $input['releaseDate'] ?? date("Y-m-d");
+    $material = $input['material'] ?? '';
+    $gender = $input['gender'] ?? 'Prefer not to say';
+    $colour = $input['colour'] ?? 'Black';
 
     if (!$name || !$brandID || !$categoryID) {
         echo json_encode(["status" => "error", "data" => "Missing required fields"]);
@@ -358,8 +362,8 @@ function handleaddProduct($pdo){
     }
 
     $stmt = $pdo->prepare("INSERT INTO shoes (name, price, brandID, categoryID, image_url, description, releaseDate, material, gender, colour)
-                           VALUES (?, ?, ?, ?, ?, ?, CURDATE(), '', 'Prefer not to say', 'Black')");
-    $stmt->execute([$name, $price, $brandID, $categoryID, $image_url, $description]);
+                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->execute([$name, $price, $brandID, $categoryID, $image_url, $description, $releaseDate, $material, $gender, $colour]);
 
     echo json_encode(["status" => "success", "data" => "Product added successfully"]);
 }
