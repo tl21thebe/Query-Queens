@@ -1,21 +1,36 @@
 /**
- * getProducts.js
+ * products.js
  * 
- * This file manages product information retrieval and filtering from the API.
- * It provides functions to fetch products and process product-related operations.
+ * This file manages product display and interaction with the API.
+ * Updated to match the actual API structure and database schema.
  */
 
 // Base URL for API requests
-const API_BASE_URL = "../php/api.php";//just saying that you may need to adjust the path when testing because i placed the api in my php folders
+const API_BASE_URL = "../php/api.php";
+
+// Get API key from localStorage (set during login)
+function getApiKey() {
+    return localStorage.getItem('apiKey') || '';
+}
 
 /**
- * Fetch all available products
+ * Fetch all available products from the API
  * 
- * @param {string} apiKey - User API key for authentication
  * @returns {Promise} - Promise that resolves to product data
  */
-async function getAllProducts() 
-{
+
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const allProducts = await getAllProducts(); 
+    populateFilters(allProducts);             
+    await loadUserPreferences(allProducts);    
+  } catch (err) {
+    console.error("Failed to initialize filters:", err);
+  }
+});
+
+
+async function getAllProducts() {
     try {
         const response = await fetch(`${API_BASE_URL}?type=getAllProducts`);
 
@@ -42,8 +57,7 @@ async function getAllProducts()
  * 
  * @returns {Promise} - Promise that resolves to rated product data
  */
-async function getRatedProducts() 
-{
+async function getRatedProducts() {
     try {
         const response = await fetch(`${API_BASE_URL}?type=GetRatedProducts`);
 
@@ -383,8 +397,30 @@ function getUniqueBrands(products) {
  * 
  * @param {Array} products - Array of product objects
  */
+/*function populateFilters(products) {
+  // Categories
+  const catFilter = document.getElementById('category-filter');
+  const categories = [...new Set(products.map(p => ({ id: p.categoryID, name: p.category })))];
+
+  catFilter.innerHTML = '<option value="">All Categories</option>';
+  categories.forEach(cat => {
+    if (cat.id)
+      catFilter.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
+  });
+
+  // Brands
+  const brandFilter = document.getElementById('brand-filter');
+  const brands = [...new Set(products.map(p => ({ id: p.brandID, name: p.brand })))];
+
+  brandFilter.innerHTML = '<option value="">All Brands</option>';
+  brands.forEach(brand => {
+    if (brand.id)
+      brandFilter.innerHTML += `<option value="${brand.id}">${brand.name}</option>`;
+  });
+}*/
+
 function populateFilters(products) {
-    // Populate category filter
+
     const categoryFilter = document.getElementById('category-filter');
     const categories = getUniqueCategories(products);
     
@@ -393,7 +429,6 @@ function populateFilters(products) {
         categoryFilter.innerHTML += `<option value="${category}">${category}</option>`;
     });
 
-    // Populate brand filter
     const brandFilter = document.getElementById('brand-filter');
     const brands = getUniqueBrands(products);
     
@@ -417,6 +452,12 @@ async function applyFilters() {
         const allProducts = await getAllProducts();
         
         const filteredProducts = allProducts.filter(product => {
+
+            ////////----------converted partt--------//////
+            const productCategory = String(product.categoryID || product.category); // Ensure type match
+      const productBrand = String(product.brandID || product.brand);
+      //////--------------------------------------------//////
+
             // Search filter
             const matchesSearch = !searchTerm || 
                 (product.name && product.name.toLowerCase().includes(searchTerm)) ||
@@ -458,6 +499,40 @@ async function clearFilters() {
         console.error('Error clearing filters:', error);
     }
 }
+
+///applies the savepreferences endpoint---------TAKEE THIS OUTTT(because we dont need it) ---------/////////////
+async function saveCurrentFiltersAsPreferences() {
+  const minPrice = document.getElementById("min-price").value;
+  const maxPrice = document.getElementById("max-price").value;
+  const category = document.getElementById("category-filter").value;
+  const brand = document.getElementById("brand-filter").value;
+
+  const categories = category ? [parseInt(category)] : [];
+  const brands = brand ? [brand] : [];
+
+  try {
+    const res = await fetch("../php/api.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "savePreferences",
+        min_price: minPrice,
+        max_price: maxPrice,
+        only_available: false, //Or grab this from a checkbox if needed
+        brands,
+        categories,
+        stores: [] 
+      })
+    });
+
+    const result = await res.json();
+    alert(result.data || "Preferences saved");
+  } catch (err) {
+    console.error("Error saving preferences:", err);
+    alert("Failed to save preferences.");
+  }
+}
+
 
 /**
  * Handle search functionality
@@ -556,3 +631,39 @@ if (typeof module !== 'undefined' && module.exports) {
     };
 }
 
+async function loadUserPreferences() {
+    try {
+        const res = await fetch('../php/api.php?type=getPreferences');
+        const result = await res.json();
+        if (result.status === 'success' && result.data) {
+            const prefs = result.data;
+
+            // Set filters
+            if (prefs.min_price !== null) document.getElementById('min-price').value = prefs.min_price;
+            if (prefs.max_price !== null) document.getElementById('max-price').value = prefs.max_price;
+
+            const brandFilter = document.getElementById('brand-filter');
+            if (prefs.brands?.length) {
+                for (const option of brandFilter.options) {
+                    if (prefs.brands.includes(option.value)) {
+                        option.selected = true;
+                    }
+                }
+            }
+
+            const categoryFilter = document.getElementById('category-filter');
+            if (prefs.categories?.length) {
+                for (const option of categoryFilter.options) {
+                    if (prefs.categories.includes(option.value)) {
+                        option.selected = true;
+                    }
+                }
+            }
+
+            // Optional: Apply the filters after setting them
+            applyFilters();
+        }
+    } catch (err) {
+        console.error("Error loading user preferences:", err);
+    }
+}
