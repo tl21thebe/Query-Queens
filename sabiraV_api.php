@@ -1155,6 +1155,7 @@ function handleGetPreferences($pdo){
 
     $userID = $_SESSION['user']['id'];
 
+    //get main preferences
     $stmt = $pdo->prepare("SELECT * FROM user_preferences WHERE userpref_UserID = ?");
     $stmt->execute([$userID]);
     $prefs = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -1166,14 +1167,29 @@ function handleGetPreferences($pdo){
 
     $prefId = $prefs['userpref_ID'];
 
-    //get the associated brand/category/store prefs
+    /*/ Get associated brand/category/store prefs
     $brands = $pdo->prepare("SELECT Upref_brands FROM userpref_brands WHERE userPrefID = ?");
     $brands->execute([$prefId]);
     $prefs['brands'] = $brands->fetchAll(PDO::FETCH_COLUMN);
 
     $cats = $pdo->prepare("SELECT Upref_categ FROM userpref_cat WHERE userPrefID = ?");
     $cats->execute([$prefId]);
+    $prefs['categories'] = $cats->fetchAll(PDO::FETCH_COLUMN);*/
+    
+    $brands = $pdo->prepare("SELECT Upref_brands FROM userpref_brands WHERE userPrefID = ?");
+    $brands->execute([$prefId]);
+    $prefs['brands'] = $brands->fetchAll(PDO::FETCH_COLUMN);
+
+
+    $cats = $pdo->prepare("
+    SELECT c.catType 
+    FROM userpref_cat uc 
+    JOIN categories c ON uc.Upref_categ = c.categoryID 
+    WHERE uc.userPrefID = ?
+    ");
+    $cats->execute([$prefId]);
     $prefs['categories'] = $cats->fetchAll(PDO::FETCH_COLUMN);
+
 
     $stores = $pdo->prepare("SELECT Upref_stores FROM userpref_stores WHERE userPrefID = ?");
     $stores->execute([$prefId]);
