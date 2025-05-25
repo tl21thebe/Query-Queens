@@ -62,8 +62,14 @@ if (substr($base_url, -1) !== '/')
             <?php endif; ?>
 
             <?php if (isLoggedIn()): ?>
-                <div class="user-info">
+                <!--<div class="user-info">
                     <span><?php echo htmlspecialchars($user_name); ?></span>
+                    <a href="<?php echo $base_url; ?>logout.php" class="logout-btn">LOGOUT</a>
+                </div>-->
+                <div class="user-info">
+                    <a href="<?php echo $base_url; ?>preferences.php" class="user-name-link">
+                        <?php echo htmlspecialchars($user_name); ?>
+                    </a>
                     <a href="<?php echo $base_url; ?>logout.php" class="logout-btn">LOGOUT</a>
                 </div>
             <?php else: ?>
