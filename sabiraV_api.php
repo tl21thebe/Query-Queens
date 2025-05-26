@@ -355,20 +355,22 @@ function handleaddProduct($pdo){
     $brandID = $input['brandID'] ?? null;
     $categoryID = $input['categoryID'] ?? null;
     $image_url = $input['image_url'] ?? '';
+    $size_range = $input['size_range'] ?? '';
     $description = $input['description'] ?? '';
     $releaseDate = $input['releaseDate'] ?? date("Y-m-d");
     $material = $input['material'] ?? '';
     $gender = $input['gender'] ?? 'Prefer not to say';
     $colour = $input['colour'] ?? 'Black';
+    $Upref_stores = $input['Upref_stores'] ??;
 
     if (!$name || !$brandID || !$categoryID) {
         echo json_encode(["status" => "error", "data" => "Missing required fields"]);
         return;
     }
 
-    $stmt = $pdo->prepare("INSERT INTO shoes (name, price, brandID, categoryID, image_url, description, releaseDate, material, gender, colour)
-                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->execute([$name, $price, $brandID, $categoryID, $image_url, $description, $releaseDate, $material, $gender, $colour]);
+    $stmt = $pdo->prepare("INSERT INTO shoes (name, price, brandID, categoryID, image_url, size_range, description, releaseDate, material, gender, colour, Upref_stores)
+                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->execute([$name, $price, $brandID, $categoryID, $image_url, $size_range, $description, $releaseDate, $material, $gender, $colour,$Upref_stores]);
 
     echo json_encode(["status" => "success", "data" => "Product added successfully"]);
 }
