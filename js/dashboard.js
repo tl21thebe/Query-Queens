@@ -3,7 +3,7 @@
  * Handles data visualization and analytics for CompareIt dashboard
  */
 
-const API_BASE_URL = "../php/api.php";
+const API_BASE_URL = "../api.php";
 
 
 let charts = {};
