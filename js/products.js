@@ -6,7 +6,7 @@
  */
 
 // Base URL for API requests
-const API_BASE_URL = "../php/api.php";
+const API_BASE_URL = "../api.php";
 
 // Get API key from localStorage (set during login)
 function getApiKey() {
@@ -317,7 +317,6 @@ function displayProducts(products) {
             </div>
             <div class="product-actions">
                 <button onclick="viewProduct(${product.shoeID})" class="view-btn">View Details</button>
-                <button onclick="compareProduct(${product.shoeID})" class="compare-btn">Compare</button>
             </div>
         </div>
     `).join('');
@@ -350,14 +349,6 @@ function viewProduct(productId)
 {
     console.log('Viewing product:', productId);
     window.location.href = `view.php?id=${productId}`;
-}
-/**
- * Compare product (placeholder function)
- */
-function compareProduct(productId) {
-    console.log('Comparing product:', productId);
-    // Add to comparison list
-    alert(`Added product ID: ${productId} to comparison`);
 }
 
 /**
@@ -511,7 +502,7 @@ async function saveCurrentFiltersAsPreferences() {
   const brands = brand ? [brand] : [];
 
   try {
-    const res = await fetch("../php/api.php", {
+    const res = await fetch("../api.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -633,7 +624,7 @@ if (typeof module !== 'undefined' && module.exports) {
 
 async function loadUserPreferences() {
     try {
-        const res = await fetch('../php/api.php?type=getPreferences');
+        const res = await fetch('../api.php?type=getPreferences');
         const result = await res.json();
         if (result.status === 'success' && result.data) {
             const prefs = result.data;

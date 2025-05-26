@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function populateSelect(selectEl, endpoint, valueField, labelField) {
     try {
-      const res = await fetch(`../php/api.php?type=${endpoint}`);
+      const res = await fetch(`../api.php?type=${endpoint}`);
       const data = await res.json();
       if (data.status === "success") {
         selectEl.innerHTML = "";
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const stores = Array.from(storeSelect.selectedOptions).map(opt => parseInt(opt.value));
 
     try {
-      const res = await fetch("../php/api.php", {
+      const res = await fetch("../api.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
         loginMessage.textContent = "Logging in...";
 
        // Send login request to API - Updated to match your API structure
-        fetch("../php/api.php", {
+        fetch("../api.php", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

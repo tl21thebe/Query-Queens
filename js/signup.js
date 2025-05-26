@@ -176,7 +176,7 @@ function registerUser(name, surname, email, password, userType, phoneNo, country
         street: street || ''       // Provide empty string if not filled
     };
     
-    fetch('../php/api.php', {
+    fetch('../api.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

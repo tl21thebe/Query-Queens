@@ -1,5 +1,5 @@
 // Base URL for local API requests
-const API_BASE_URL = "../php/api.php";
+const API_BASE_URL = "../api.php";
 
 document.addEventListener("DOMContentLoaded", function() {
     const productId = getProductIdFromURL();
@@ -307,13 +307,3 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
-
-
-// Cart and Wishlist functions (if needed)
-function addToCart(product) {
-    alert(`${product.name} has been added to your cart.`);
-}
-
-function addToWishlist(product) {
-    alert(`${product.name} has been added to your wishlist.`);
-}
