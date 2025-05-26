@@ -114,3 +114,9 @@ CREATE TABLE Categories (
     categoryID INT PRIMARY KEY AUTO_INCREMENT,
     type VARCHAR(255)
 );
+
+INSERT INTO user_phoneno (userID, U_phoneNo)
+SELECT userID, phoneNo
+FROM users
+WHERE phoneNo IS NOT NULL;
+
