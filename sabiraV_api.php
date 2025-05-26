@@ -6,6 +6,16 @@ header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
 require_once 'php/config.php';
 
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+ini_set('error_log', 'php_errors.log');
+// Enhanced debugging
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+file_put_contents('debug.log', date('Y-m-d H:i:s') . ' - Request received: ' . print_r($_POST, true) . "\n", FILE_APPEND);
+
+
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -361,7 +371,7 @@ function handleaddProduct($pdo){
     $material = $input['material'] ?? '';
     $gender = $input['gender'] ?? 'Prefer not to say';
     $colour = $input['colour'] ?? 'Black';
-    $Upref_stores = $input['Upref_stores'] ??;
+    $Upref_stores = $input['Upref_stores'] ?? '';
 
     if (!$name || !$brandID || !$categoryID) {
         echo json_encode(["status" => "error", "data" => "Missing required fields"]);
