@@ -61,7 +61,6 @@
         <label for="max-price">Max Price (ZAR):</label>
         <input type="number" id="max-price" placeholder="No limit" min="0">
       </div>
-    </div>
 
         <!--Sort Dropdown -->
       <div class="filter-group">
