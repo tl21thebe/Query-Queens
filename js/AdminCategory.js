@@ -20,21 +20,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (action !== "addCategory") {
             formHtml += `
-                <label for="categoryID">Category ID *</label>
-                <input type="number" name="categoryID" id="categoryID" required>
+                <label for="categoryID">Select Category *</label>
+                <select name="categoryID" id="categoryID" required>
+                    <option value="">Loading categories...</option>
+                </select>
             `;
         }
 
         if (action !== "deleteCategory") {
-            const required = "required";
             formHtml += `
                 <label for="catType">Category Type</label>
-                <input type="text" name="catType" id="catType" ${required}>
+                <input type="text" name="catType" id="catType" required>
             `;
         }
 
         formHtml += `<button type="submit">${actionTitle}</button></form>`;
         actionContainer.innerHTML = formHtml;
+
+        if (action !== "addCategory") {
+            loadCategoriesDropdown();
+        }
 
         document.getElementById("category-form").addEventListener("submit", (e) => {
             e.preventDefault();
@@ -54,8 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         payload["type"] = action;
 
-        fetch("../api.php", 
-        {
+        fetch("../api.php", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -70,6 +74,37 @@ document.addEventListener("DOMContentLoaded", () => {
         .catch(err => {
             console.error("Request failed", err);
             alert("Request failed: " + err.message);
+        });
+    }
+
+    function loadCategoriesDropdown() {
+        fetch("../api.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ type: "getCategories" })
+        })
+        .then(res => res.json())
+        .then(data => {
+            const select = document.getElementById("categoryID");
+            select.innerHTML = "";
+
+            if (data.status === "success" && Array.isArray(data.data)) {
+                data.data.forEach(category => {
+                    const option = document.createElement("option");
+                    option.value = category.id || category.categoryID;
+                    option.textContent = category.type || category.catType || category.name;
+                    select.appendChild(option);
+                });
+            } else {
+                select.innerHTML = "<option value=''>No categories found</option>";
+            }
+        })
+        .catch(err => {
+            console.error("Failed to load categories", err);
+            const select = document.getElementById("categoryID");
+            select.innerHTML = "<option value=''>Error loading categories</option>";
         });
     }
 
