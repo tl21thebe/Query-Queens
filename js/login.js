@@ -56,6 +56,31 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(data => {
             console.log("API Response:", data); // Debug
+
+            //login timeout
+            if (data.status === 'locked') {
+                let wait = data.waitXSeconds;
+                loginMessage.style.color = 'red';
+                loginMessage.textContent = `Too many failed attempts. Please wait ${wait} seconds.`;
+
+                // Clear any existing timer
+                if (window.lockoutTimer) {
+                    clearInterval(window.lockoutTimer);
+                }
+
+                // Start countdown timer
+                window.lockoutTimer = setInterval(() => {
+                    wait--;
+                    if (wait > 0) {
+                        loginMessage.textContent = `Too many failed attempts. Please wait ${wait} seconds.`;
+                    } else {
+                        clearInterval(window.lockoutTimer);
+                        loginMessage.textContent = ''; 
+                    }
+                }, 1000);
+
+                return;
+            }
             
             if (data.status === 'success') 
             {
