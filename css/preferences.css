@@ -1,0 +1,105 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 40px;
+}
+
+.preferences-container {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  max-width: 700px;
+  margin: 0 auto;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.preferences-container h2 {
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 24px;
+  border-bottom: 2px solid #e63946;
+  padding-bottom: 10px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.form-group input[type="number"],
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.form-group input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+.preferences-container .form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 30px;
+}
+
+.form-actions button {
+  background-color: #e63946;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.form-actions button:hover {
+  background-color: #c2182b;
+}
+
+#status-message {
+  margin-top: 20px;
+  font-weight: bold;
+  color: green;
+  text-align: center;
+}
+
+.user-name-link {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    padding-right: 10px;
+}
+
+.user-name-link:hover {
+    text-decoration: underline;
+    color: #ffd700;
+}
+
+.form-group select[multiple] {
+  height: 120px;
+  background-color: #f9f9f9;
+  resize: vertical;
+}
+
+.form-group option {
+  padding: 5px;
+  font-size: 14px;
+}
+
+.form-group select[multiple]:focus {
+  border-color: #e63946;
+  outline: none;
+  background-color: #fff;
+}
