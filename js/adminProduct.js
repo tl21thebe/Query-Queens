@@ -1,19 +1,17 @@
 document.addEventListener("DOMContentLoaded", () => {
     const actionContainer = document.getElementById("form-container");
 
-    document.getElementById("add-btn").addEventListener("click", () => {
-        renderForm("add");
-    });
+    document.getElementById("add-btn").addEventListener("click", () => renderForm("add"));
+    document.getElementById("edit-btn").addEventListener("click", () => renderForm("edit"));
+    document.getElementById("delete-btn").addEventListener("click", () => renderForm("delete"));
 
-    document.getElementById("edit-btn").addEventListener("click", () => {
-        renderForm("edit");
-    });
+    async function renderForm(action) {
+        const [products, categories, brands] = await Promise.all([
+            fetchData("getAllProducts"),
+            fetchData("getCategories"),
+            fetchData("getBrands")
+        ]);
 
-    document.getElementById("delete-btn").addEventListener("click", () => {
-        renderForm("delete");
-    });
-
-    function renderForm(action) {
         const actionTitleMap = {
             add: "Add Shoe",
             edit: "Edit Shoe",
@@ -30,8 +28,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (action !== "add") {
             formHtml += `
-                <label for="shoeID">Shoe ID *</label>
-                <input type="number" name="shoeID" id="shoeID" required>
+                <label for="shoeID">Select Shoe *</label>
+                <select name="shoeID" id="shoeID" required>
+                    <option value="">-- Select Shoe --</option>
+                    ${products.map(p => `<option value="${p.shoeID}">${p.name} (ID: ${p.shoeID})</option>`).join('')}
+                </select>
             `;
         }
 
@@ -39,14 +40,20 @@ document.addEventListener("DOMContentLoaded", () => {
             const required = action === "add" ? "required" : "";
 
             formHtml += `
-                <label for="categoryID">Category ID</label>
-                <input type="number" name="categoryID" id="categoryID" ${required}>
+                <label for="categoryID">Category *</label>
+                <select name="categoryID" id="categoryID" ${required}>
+                    <option value="">-- Select Category --</option>
+                   ${categories.map(c => `<option value="${c.categoryID}">${c.catType}</option>`).join('')}
+                </select>
 
                 <label for="name">Name</label>
                 <input type="text" name="name" id="name" ${required}>
 
-                <label for="brandID">Brand ID</label>
-                <input type="number" name="brandID" id="brandID" ${required}>
+                <label for="brandID">Brand *</label>
+                <select name="brandID" id="brandID" ${required}>
+                    <option value="">-- Select Brand --</option>
+                    ${brands.map(b => `<option value="${b.brandID}">${b.name}</option>`).join('')}
+                </select>
 
                 <label for="price">Price</label>
                 <input type="number" name="price" id="price" step="0.01" ${required}>
@@ -82,10 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
         }
 
-        formHtml += `
-            <button type="submit">${buttonLabelMap[action]}</button>
-        </form>`;
-
+        formHtml += `<button type="submit">${buttonLabelMap[action]}</button></form>`;
         actionContainer.innerHTML = formHtml;
 
         document.getElementById("shoe-form").addEventListener("submit", (e) => {
@@ -104,11 +108,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        payload["type"] = action + "Product"; 
-        console.log("Request payload:", JSON.stringify(payload));
+        payload["type"] = action + "Product";
 
-        fetch("../api.php", 
-        {
+        fetch("../api.php", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -117,8 +119,6 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .then(res => res.json())
         .then(data => {
-            console.log("API response:", data);
-
             if (data.status === "success") {
                 alert(data.data);
             } else {
@@ -129,6 +129,12 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Request failed:", err);
             alert("Request failed: " + err.message);
         });
+    }
+
+    async function fetchData(type) {
+        const res = await fetch(`../api.php?type=${type}`);
+        const data = await res.json();
+        return data.status === "success" ? data.data : [];
     }
 
     function sanitize(input) {
