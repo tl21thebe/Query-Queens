@@ -62,7 +62,20 @@
         <input type="number" id="max-price" placeholder="No limit" min="0">
       </div>
     </div>
-    
+
+        <!--Sort Dropdown -->
+      <div class="filter-group">
+        <label for="sort-order">Sort By:</label>
+        <select id="sort-order">
+          <option value="none">Default</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="name-asc">Name: A to Z</option>
+          <option value="name-desc">Name: Z to A</option>
+        </select>
+      </div>
+    </div>
+  
     <div class="filter-actions">
       <button onclick="applyFilters()" class="btn btn-primary">Apply Filters</button>
       <button onclick="clearFilters()" class="btn btn-secondary">Clear Filters</button>
