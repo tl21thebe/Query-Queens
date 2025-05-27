@@ -98,39 +98,42 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    function handleSubmit(action) {
-        const formData = new FormData(document.getElementById("shoe-form"));
-        const payload = {};
+function handleSubmit(action) {
+    const form = document.getElementById("shoe-form");
+    const formData = new FormData(form);
+    const payload = {};
 
-        for (let [key, value] of formData.entries()) {
-            if (value.trim() !== "") {
-                payload[key] = sanitize(value);
-            }
+    for (let [key, value] of formData.entries()) {
+        const trimmed = sanitize(value);
+        if (key === "name" && trimmed === "") {
+            alert("Shoe name cannot be empty.");
+            return;
         }
-
-        payload["type"] = action + "Product";
-
-        fetch("../api.php", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload)
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.status === "success") {
-                alert(data.data);
-            } else {
-                alert("API Error: " + data.data);
-            }
-        })
-        .catch(err => {
-            console.error("Request failed:", err);
-            alert("Request failed: " + err.message);
-        });
+        payload[key] = trimmed;
     }
 
+    payload["type"] = action + "Product";
+
+    fetch("../api.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "success") {
+            alert(data.data);
+        } else {
+            alert("API Error: " + data.data);
+        }
+    })
+    .catch(err => {
+        console.error("Request failed:", err);
+        alert("Request failed: " + err.message);
+    });
+}
     async function fetchData(type) {
         const res = await fetch(`../api.php?type=${type}`);
         const data = await res.json();
