@@ -224,9 +224,42 @@ function handleLogin($pdo) {
     $email = $input['email'] ?? '';
     $password = $input['password'] ?? '';
 
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
     if (!$email || !$password) {
         echo json_encode(["status" => "error", "data" => "Email and password required"]);
         return;
+    }
+
+    //session tracking for login attempts
+    if (!isset($_SESSION['login_attempts'])) {
+    $_SESSION['login_attempts'] = 0;
+        
+    }
+    if (!isset($_SESSION['last_attempt_time'])) {
+        $_SESSION['last_attempt_time'] = 0;
+    }
+    $lockoutDuration = 30; // seconds
+    $maxAttempts = 5;
+
+    // Check if user is locked out
+    if ($_SESSION['login_attempts'] >= $maxAttempts) {
+        $timeSinceLast = time() - $_SESSION['last_attempt_time'];
+
+        if ($timeSinceLast < $lockoutDuration) {
+            $wait = $lockoutDuration - $timeSinceLast;
+            echo json_encode([
+                "status" => "locked",
+                "data" => "Too many failed attempts. Please wait $wait seconds.",
+                "waitXSeconds" => $wait
+            ]);
+            return;
+        } else {
+            // Reset after cooldown
+            $_SESSION['login_attempts'] = 0;
+        }
     }
 
     try {
@@ -235,6 +268,9 @@ function handleLogin($pdo) {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($password, $user['password'])) {
+            // Successful login, reset session login attempts
+            $_SESSION['login_attempts'] = 0;
+            $_SESSION['last_attempt_time'] = 0;
             
             $_SESSION['user'] = [
                 'id' => $user['userID'],
@@ -262,6 +298,9 @@ function handleLogin($pdo) {
                 ]
             ]);
         } else {
+            // Failed login: increment attempts and update last attempt time
+            $_SESSION['login_attempts']++;
+            $_SESSION['last_attempt_time'] = time();
             echo json_encode(["status" => "error", "data" => "Invalid credentials"]);
         }
     } catch (PDOException $e) {
