@@ -6,10 +6,11 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("delete-btn").addEventListener("click", () => renderForm("delete"));
 
     async function renderForm(action) {
-        const [products, categories, brands] = await Promise.all([
+        const [products, categories, brands,stores] = await Promise.all([
             fetchData("getAllProducts"),
             fetchData("getCategories"),
-            fetchData("getBrands")
+            fetchData("getBrands"),
+            fetchData("getStores")
         ]);
 
         const actionTitleMap = {
@@ -84,8 +85,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 <label for="colour">Colour</label>
                 <input type="text" name="colour" id="colour" ${required}>
 
-                <label for="Upref_stores">User Preferred Stores</label>
-                <input type="number" name="Upref_stores" id="Upref_stores">
+                <label for="Upref_stores">User Preferred Stores</label>          
+<select name="Upref_stores" id="Upref_stores">
+    <option value="">-- Select Store --</option>
+    ${stores.map(store => `<option value="${store.storeID}">${store.name}</option>`).join('')}
+</select>
             `;
         }
 
