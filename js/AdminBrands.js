@@ -22,23 +22,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
         let formHtml = `<form id="brand-form"><h2>${actionTitleMap[action]}</h2>`;
 
+        // For edit and delete: show dropdown to select brand
         if (action !== "addBrand") {
             formHtml += `
-                <label for="brandID">Brand ID *</label>
-                <input type="number" name="brandID" id="brandID" required>
+                <label for="brandID">Select Brand *</label>
+                <select name="brandID" id="brandID" required>
+                    <option value="">Loading brands...</option>
+                </select>
             `;
         }
 
+        // For add and edit: show brand name input
         if (action !== "deleteBrand") {
-            const required = "required";
             formHtml += `
                 <label for="name">Brand Name</label>
-                <input type="text" name="name" id="name" ${required}>
+                <input type="text" name="name" id="name" required>
             `;
         }
 
         formHtml += `<button type="submit">${actionTitleMap[action]}</button></form>`;
         actionContainer.innerHTML = formHtml;
+
+        if (action !== "addBrand") {
+            loadBrandsDropdown(action);
+        }
+
+        // Autofill brand name input when editing
+        if (action === "updateBrand") {
+            document.getElementById("brandID").addEventListener("change", (e) => {
+                const selectedID = e.target.value;
+                const selectedOption = e.target.selectedOptions[0];
+                document.getElementById("name").value = selectedOption ? selectedOption.dataset.name : "";
+            });
+        }
 
         document.getElementById("brand-form").addEventListener("submit", (e) => {
             e.preventDefault();
@@ -58,8 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         payload["type"] = action;
 
-        fetch("../api.php", 
-        {
+        fetch("../api.php", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -70,14 +85,55 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(data => {
             console.log("API Response:", data);
             const message = typeof data.data === "object" && data.data.message
-            ? data.data.message
-            : data.data;
-
+                ? data.data.message
+                : data.data;
             alert(message || "Action completed.");
         })
         .catch(err => {
             console.error("Request failed", err);
             alert("Request failed: " + err.message);
+        });
+    }
+
+    function loadBrandsDropdown(action) {
+        fetch("../api.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ type: "getBrands" })
+        })
+        .then(res => res.json())
+        .then(data => {
+            const select = document.getElementById("brandID");
+            select.innerHTML = "";
+
+            if (data.status === "success" && Array.isArray(data.data)) {
+                data.data.forEach(brand => {
+                    const option = document.createElement("option");
+                    option.value = brand.brandID;
+                    option.textContent = brand.name;
+                    // store brand name in data attribute for autofill
+                    option.dataset.name = brand.name;
+                    select.appendChild(option);
+                });
+
+                // If editing, prefill brand name input with first option
+                if (action === "updateBrand") {
+                    const firstOption = select.options[0];
+                    if (firstOption) {
+                        document.getElementById("name").value = firstOption.dataset.name;
+                    }
+                }
+
+            } else {
+                select.innerHTML = "<option value=''>No brands found</option>";
+            }
+        })
+        .catch(err => {
+            console.error("Failed to load brands", err);
+            const select = document.getElementById("brandID");
+            select.innerHTML = "<option value=''>Error loading brands</option>";
         });
     }
 
