@@ -23,7 +23,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     const allProducts = await getAllProducts(); 
     populateFilters(allProducts);             
-    await loadUserPreferences(allProducts);    
+    await loadUserPreferences(allProducts);  
+      
+    const sortOrder = document.getElementById('sort-order');
+    if (sortOrder) sortOrder.addEventListener('change', () => applyFilters(allProducts));
+      
   } catch (err) {
     console.error("Failed to initialize filters:", err);
   }
@@ -466,6 +470,20 @@ async function applyFilters() {
             
             return matchesSearch && matchesCategory && matchesBrand && matchesPrice;
         });
+
+        // Get sort order from the DOM
+        const sortOrder = document.getElementById('sort-order')?.value || '';
+
+        // Sort products
+        if (sortOrder === 'name-asc') {
+            filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+        } else if (sortOrder === 'name-desc') {
+            filteredProducts.sort((a, b) => b.name.localeCompare(a.name));
+        } else if (sortOrder === 'price-asc') {
+            filteredProducts.sort((a, b) => (parseFloat(a.price) || 0) - (parseFloat(b.price) || 0));
+        } else if (sortOrder === 'price-desc') {
+            filteredProducts.sort((a, b) => (parseFloat(b.price) || 0) - (parseFloat(a.price) || 0));
+        }
 
         displayProducts(filteredProducts);
     } catch (error) {
