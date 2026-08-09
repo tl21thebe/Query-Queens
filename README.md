@@ -2,9 +2,9 @@
 
 # 👑 Query-Queens
 
-### *CompareIt* — Smarter Price Comparison, Reimagined
+### *CompareIt*: Smarter Price Comparison, Reimagined
 
-A modern price comparison web app built to outclass legacy platforms like PriceCheck — with real-time price aggregation, a clean UI, and a genuinely engaging shopping experience.
+A modern price comparison web app built to outclass legacy platforms like PriceCheck, with real-time price aggregation, a clean UI, and a genuinely engaging shopping experience.
 
 [![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://www.php.net/)
 [![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
@@ -14,46 +14,48 @@ A modern price comparison web app built to outclass legacy platforms like PriceC
 
 [![License](https://img.shields.io/badge/License-Educational-blue?style=flat-square)]()
 [![Status](https://img.shields.io/badge/Status-Active-brightgreen?style=flat-square)]()
-[![Made with](https://img.shields.io/badge/Made%20with-%E2%9D%A4-red?style=flat-square)]()
 
 </div>
 
 ---
 
-## 📖 About
+## About
+![About](https://img.shields.io/badge/-Overview-informational?style=flat-square&logo=readthedocs&logoColor=white)
 
 **CompareIt** addresses the shortcomings of older platforms like PriceCheck by offering a modern, user-friendly interface and real-time price aggregation from both **online and physical retailers worldwide**.
 
 With CompareIt, users can:
 
-- 🗂️ Browse product categories
-- 🎯 Filter by brand, rating, and other criteria
-- 🔍 View detailed product information
-- 💰 Compare prices across multiple stores
-- ⭐ Contribute their own reviews
+- Browse product categories
+- Filter by brand, rating, and other criteria
+- View detailed product information
+- Compare prices across multiple stores
+- Contribute their own reviews
 
 The result is a more engaging, transparent, and efficient shopping experience.
 
 ---
 
-## ✨ Features at a Glance
+## Features at a Glance
+![Features](https://img.shields.io/badge/-Key%20Features-success?style=flat-square&logo=starship&logoColor=white)
 
 | Feature | Description |
 |---|---|
-| 🛍️ **Real-Time Price Aggregation** | Pulls live prices from online and physical retailers |
-| 🔎 **Smart Filtering** | Filter products by brand, rating, category, and more |
-| 📊 **Data Visualization Dashboard** | Interactive charts for trends, prices, and top products |
-| 🔐 **Secure Authentication** | Bcrypt password hashing via PHP's `PASSWORD_DEFAULT` |
-| 📝 **User Reviews** | Community-driven product ratings and feedback |
-| 🌿 **Modular Git Workflow** | Feature-branch development for clean, collaborative code |
+| **Real-Time Price Aggregation** | Pulls live prices from online and physical retailers |
+| **Smart Filtering** | Filter products by brand, rating, category, and more |
+| **Data Visualization Dashboard** | Interactive charts for trends, prices, and top products |
+| **Secure Authentication** | Bcrypt password hashing via PHP's `PASSWORD_DEFAULT` |
+| **User Reviews** | Community-driven product ratings and feedback |
+| **Modular Git Workflow** | Feature-branch development for clean, collaborative code |
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
+![Setup](https://img.shields.io/badge/-Setup%20Guide-blue?style=flat-square&logo=gitbook&logoColor=white)
 
 Follow these steps to build and run Query-Queens locally.
 
-### 1️⃣ Clone the Repository
+### Step 1: Clone the Repository
 
 Make sure you're on the `main` branch, then clone the repo:
 
@@ -67,17 +69,17 @@ Already have it cloned? Just pull the latest changes:
 git pull origin main
 ```
 
-### 2️⃣ Open the Project in VS Code
+### Step 2: Open the Project in VS Code
 
 Navigate to the cloned repository folder and open it in **Visual Studio Code**.
 
-### 3️⃣ Set Up the Local Server (XAMPP)
+### Step 3: Set Up the Local Server (XAMPP)
 
 1. Launch **XAMPP** and start the **Apache** and **MySQL** services.
 2. Locate your XAMPP installation folder (typically `C:\xampp`).
 3. Copy the entire `Query-Queens` project folder into the `htdocs` directory.
 
-### 4️⃣ Run the Application
+### Step 4: Run the Application
 
 Open your browser and navigate to:
 
@@ -87,13 +89,13 @@ http://localhost/Query-Queens/index.html
 
 You'll land on the launch page, with a button leading through to the login page.
 
-### 5️⃣ Account Access
+### Step 5: Account Access
 
-- 🆕 **New user?** Click **Sign Up** on the login page to register.
-- 👀 **Just browsing?** Use the **CompareIt** feature in the navigation bar — no account needed.
+- **New user?** Click **Sign Up** on the login page to register.
+- **Just browsing?** Use the **CompareIt** feature in the navigation bar; no account needed.
 
 <details>
-<summary><strong>🔑 Default Test Credentials (click to expand)</strong></summary>
+<summary><strong>Default Test Credentials (click to expand)</strong></summary>
 
 <br>
 
@@ -115,34 +117,36 @@ You'll land on the launch page, with a button leading through to the login page.
 | Email | `sam@gmail.com` |
 | Password | `Sampucket@1` |
 
-> ⚠️ These are demo credentials for local testing only — not intended for production use.
+> **Note:** These are demo credentials for local testing only, not intended for production use.
 
 </details>
 
 ---
 
-## 🌟 Bonus Features Implemented
+## Bonus Features Implemented
+![Bonus](https://img.shields.io/badge/-Extras-yellow?style=flat-square&logo=star&logoColor=white)
 
-### 🔒 Security First — Secure Your App
-Passwords are hashed using PHP's `PASSWORD_DEFAULT`, which applies the **bcrypt** algorithm with automatic salting — providing strong protection against brute-force attacks.
+### Security First: Secure Your App
+Passwords are hashed using PHP's `PASSWORD_DEFAULT`, which applies the **bcrypt** algorithm with automatic salting, providing strong protection against brute-force attacks.
 
-### 📊 Data Visualization Dashboard
+### Data Visualization Dashboard
 An interactive dashboard surfaces:
-- 📈 User activity trends
-- 💹 Price history graphs
-- 🏆 Top-rated products
-- 🥧 Brand and category distribution charts
+- User activity trends
+- Price history graphs
+- Top-rated products
+- Brand and category distribution charts
 
-### 🌿 Advanced Git Workflow
+### Advanced Git Workflow
 Development followed a collaborative, feature-branch model:
-- `frontend` — PHP, JavaScript, CSS
-- `backend` — server logic and data handling
+- `frontend`: PHP, JavaScript, CSS
+- `backend`: server logic and data handling
 
 All branches were merged into `main` upon completion, ensuring modular development and smooth integration.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
+![Stack](https://img.shields.io/badge/-Built%20With-lightgrey?style=flat-square&logo=stackshare&logoColor=white)
 
 <div align="center">
 
@@ -158,12 +162,13 @@ All branches were merged into `main` upon completion, ensuring modular developme
 
 ---
 
-## 🤝 Support
+## Support
+![Support](https://img.shields.io/badge/-Get%20Help-orange?style=flat-square&logo=maildotru&logoColor=white)
 
 If you need further assistance or encounter any issues, feel free to reach out to the development team.
 
 <div align="center">
 
-**Made with 💛 by the Query-Queens team**
+**Built by the Query-Queens team**
 
 </div>
