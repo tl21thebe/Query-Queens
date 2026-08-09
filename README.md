@@ -1,57 +1,169 @@
-# Query-Queens
- The CompareIt price comparison web application designed to address the shortcomings of older platforms like PriceCheck, offering a modern, user-friendly interface and real-time price aggregation from online and physical retailers worldwide. The platform enables users to browse categories, filter by criteria such as brand or rating, view detailed product information, compare prices across stores, and contribute reviews, creating a more engaging and efficient shopping experience.
+<div align="center">
 
-How to Build and Run the Application
-Follow the steps below to successfully set up and launch the Query-Queens web application on your local machine:
+# 👑 Query-Queens
 
-1. Clone the Repository
-Visit the Query-Queens GitHub repository and ensure you are on the main branch.
-Clone the repository to your local machine using the following command
+### *CompareIt* — Smarter Price Comparison, Reimagined
+
+A modern price comparison web app built to outclass legacy platforms like PriceCheck — with real-time price aggregation, a clean UI, and a genuinely engaging shopping experience.
+
+[![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://www.php.net/)
+[![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
+[![XAMPP](https://img.shields.io/badge/XAMPP-FB7A24?style=for-the-badge&logo=xampp&logoColor=white)](https://www.apachefriends.org/)
+
+[![License](https://img.shields.io/badge/License-Educational-blue?style=flat-square)]()
+[![Status](https://img.shields.io/badge/Status-Active-brightgreen?style=flat-square)]()
+[![Made with](https://img.shields.io/badge/Made%20with-%E2%9D%A4-red?style=flat-square)]()
+
+</div>
+
+---
+
+## 📖 About
+
+**CompareIt** addresses the shortcomings of older platforms like PriceCheck by offering a modern, user-friendly interface and real-time price aggregation from both **online and physical retailers worldwide**.
+
+With CompareIt, users can:
+
+- 🗂️ Browse product categories
+- 🎯 Filter by brand, rating, and other criteria
+- 🔍 View detailed product information
+- 💰 Compare prices across multiple stores
+- ⭐ Contribute their own reviews
+
+The result is a more engaging, transparent, and efficient shopping experience.
+
+---
+
+## ✨ Features at a Glance
+
+| Feature | Description |
+|---|---|
+| 🛍️ **Real-Time Price Aggregation** | Pulls live prices from online and physical retailers |
+| 🔎 **Smart Filtering** | Filter products by brand, rating, category, and more |
+| 📊 **Data Visualization Dashboard** | Interactive charts for trends, prices, and top products |
+| 🔐 **Secure Authentication** | Bcrypt password hashing via PHP's `PASSWORD_DEFAULT` |
+| 📝 **User Reviews** | Community-driven product ratings and feedback |
+| 🌿 **Modular Git Workflow** | Feature-branch development for clean, collaborative code |
+
+---
+
+## 🚀 Getting Started
+
+Follow these steps to build and run Query-Queens locally.
+
+### 1️⃣ Clone the Repository
+
+Make sure you're on the `main` branch, then clone the repo:
+
+```bash
 git clone https://github.com/your-username/Query-Queens.git
-Alternatively, pull the latest changes from the main branch:
+```
+
+Already have it cloned? Just pull the latest changes:
+
+```bash
 git pull origin main
-2. Open the Project in VS Code
-Navigate to the cloned repository folder on your computer.
-Open the folder in Visual Studio Code.
-3. Set Up the Local Server Using XAMPP
-Launch XAMPP and start both the Apache and MySQL services.
-Locate your XAMPP installation folder (usually found in C:\xampp).
-Inside the htdocs directory, copy and paste the entire Query-Queens project folder.
-4. Run the Application in Your Browser
-Open any web browser and navigate to the following URL:
+```
+
+### 2️⃣ Open the Project in VS Code
+
+Navigate to the cloned repository folder and open it in **Visual Studio Code**.
+
+### 3️⃣ Set Up the Local Server (XAMPP)
+
+1. Launch **XAMPP** and start the **Apache** and **MySQL** services.
+2. Locate your XAMPP installation folder (typically `C:\xampp`).
+3. Copy the entire `Query-Queens` project folder into the `htdocs` directory.
+
+### 4️⃣ Run the Application
+
+Open your browser and navigate to:
+
+```
 http://localhost/Query-Queens/index.html
-You will be directed to the launch page, which contains a button that navigates to the login page.
-5. Account Access
-If you do not have an account, click the Sign Up link on the login page to register.
-Alternatively, you may explore the site without registering by using the CompareIt feature in the navigation bar.
+```
 
-Default Login Credentials:
-You may use the following test credentials to access the application:
-Customer Account:
-Name: Didi
-Surname: Tlaka
-Email: didi@gmail.com
-Password: Diditlaka@1
-Admin Account:
-Name: Sam
-Surname: Pucket
-Email: sam@gmail.com
-Password: Sampucket@1
+You'll land on the launch page, with a button leading through to the login page.
 
-Bonus Features Implemented
-1. Security First – Secure Your App
-Implemented secure password hashing using PASSWORD_DEFAULT in PHP.
-This uses the bcrypt algorithm with automatic salting, offering strong protection against brute-force attacks.
-2. Data Visualization Dashboard
-Developed an interactive dashboard displaying:
-User activity trends
-Price history graphs
-Top-rated products
-Brand and category distribution charts
-3. Advanced Git Workflow
-Adopted a collaborative development workflow by using feature-specific branches:
-Frontend (PHP, JavaScript, CSS)
-Backend
-Ensured modular development and smoother integration by merging all branches into the main branch upon completion.
+### 5️⃣ Account Access
 
-If you need further assistance or encounter issues, feel free to reach out to the development team.
+- 🆕 **New user?** Click **Sign Up** on the login page to register.
+- 👀 **Just browsing?** Use the **CompareIt** feature in the navigation bar — no account needed.
+
+<details>
+<summary><strong>🔑 Default Test Credentials (click to expand)</strong></summary>
+
+<br>
+
+**Customer Account**
+
+| Field | Value |
+|---|---|
+| Name | Didi |
+| Surname | Tlaka |
+| Email | `didi@gmail.com` |
+| Password | `Diditlaka@1` |
+
+**Admin Account**
+
+| Field | Value |
+|---|---|
+| Name | Sam |
+| Surname | Pucket |
+| Email | `sam@gmail.com` |
+| Password | `Sampucket@1` |
+
+> ⚠️ These are demo credentials for local testing only — not intended for production use.
+
+</details>
+
+---
+
+## 🌟 Bonus Features Implemented
+
+### 🔒 Security First — Secure Your App
+Passwords are hashed using PHP's `PASSWORD_DEFAULT`, which applies the **bcrypt** algorithm with automatic salting — providing strong protection against brute-force attacks.
+
+### 📊 Data Visualization Dashboard
+An interactive dashboard surfaces:
+- 📈 User activity trends
+- 💹 Price history graphs
+- 🏆 Top-rated products
+- 🥧 Brand and category distribution charts
+
+### 🌿 Advanced Git Workflow
+Development followed a collaborative, feature-branch model:
+- `frontend` — PHP, JavaScript, CSS
+- `backend` — server logic and data handling
+
+All branches were merged into `main` upon completion, ensuring modular development and smooth integration.
+
+---
+
+## 🛠️ Tech Stack
+
+<div align="center">
+
+![PHP](https://img.shields.io/badge/-PHP-777BB4?style=flat-square&logo=php&logoColor=white)
+![MySQL](https://img.shields.io/badge/-MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white)
+![JavaScript](https://img.shields.io/badge/-JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
+![HTML5](https://img.shields.io/badge/-HTML5-E34F26?style=flat-square&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/-CSS3-1572B6?style=flat-square&logo=css3&logoColor=white)
+![XAMPP](https://img.shields.io/badge/-XAMPP-FB7A24?style=flat-square&logo=xampp&logoColor=white)
+![Git](https://img.shields.io/badge/-Git-F05032?style=flat-square&logo=git&logoColor=white)
+
+</div>
+
+---
+
+## 🤝 Support
+
+If you need further assistance or encounter any issues, feel free to reach out to the development team.
+
+<div align="center">
+
+**Made with 💛 by the Query-Queens team**
+
+</div>
